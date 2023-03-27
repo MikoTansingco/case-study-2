@@ -3,9 +3,9 @@ package View;
 import Controller.Main;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.WindowConstants;
-
 public class Frame extends javax.swing.JFrame {
 
     public Frame() {
@@ -200,6 +200,8 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_clientBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+
+        unhideButtons();
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
 
@@ -224,10 +226,12 @@ public class Frame extends javax.swing.JFrame {
         loginPnl.frame = this;
         registerPnl.frame = this;
         
-        adminHomePnl.init(main.sqlite);
+        
+
         clientHomePnl.init(main.sqlite);
-        managerHomePnl.init(main.sqlite);
         staffHomePnl.init(main.sqlite);
+        managerHomePnl.init(main.sqlite);
+        adminHomePnl.init(main.sqlite);
         
         Container.setLayout(frameView);
         Container.add(loginPnl, "loginPnl");
@@ -236,12 +240,53 @@ public class Frame extends javax.swing.JFrame {
         frameView.show(Container, "loginPnl");
         
         Content.setLayout(contentView);
-        Content.add(adminHomePnl, "adminHomePnl");
-        Content.add(managerHomePnl, "managerHomePnl");
-        Content.add(staffHomePnl, "staffHomePnl");
         Content.add(clientHomePnl, "clientHomePnl");
+        Content.add(managerHomePnl, "managerHomePnl");
+        Content.add(adminHomePnl, "adminHomePnl");
+        Content.add(staffHomePnl, "staffHomePnl");
         
         this.setVisible(true);
+    }
+    public void hideButtons(int role){//hides the button when logging in with a specific role
+        switch(role){
+            case 1://hides all buttons
+                adminBtn.setVisible(false);
+                clientBtn.setVisible(false);
+                managerBtn.setVisible(false);
+                staffBtn.setVisible(false);
+                break;
+            case 2://hide all except client home
+                adminBtn.setVisible(false);
+                managerBtn.setVisible(false);
+                staffBtn.setVisible(false);
+                contentView.show(Content, "clientHomePnl");
+                break;
+            case 3://hide all except staff home
+                adminBtn.setVisible(false);
+                managerBtn.setVisible(false);
+                clientBtn.setVisible(false);
+                contentView.show(Content, "staffHomePnl");
+                break;
+            case 4://hide all except manager home
+                adminBtn.setVisible(false);
+                clientBtn.setVisible(false);
+                staffBtn.setVisible(false);
+                contentView.show(Content, "managerHomePnl");
+                break;
+            case 5://hide all except admin home
+                clientBtn.setVisible(false);
+                managerBtn.setVisible(false);
+                staffBtn.setVisible(false);
+                contentView.show(Content, "adminHomePnl");
+                break;
+        }
+    }
+    public void unhideButtons(){//unhides the buttons after logging out
+            adminBtn.setVisible(true);
+            clientBtn.setVisible(true);
+            managerBtn.setVisible(true);
+            staffBtn.setVisible(true);
+                
     }
     
     public void mainNav(){
