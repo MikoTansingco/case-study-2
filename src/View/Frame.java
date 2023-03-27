@@ -217,6 +217,8 @@ public class Frame extends javax.swing.JFrame {
     private CardLayout contentView = new CardLayout();
     private CardLayout frameView = new CardLayout();
     
+    private int rolef = 0;
+    
     public void init(Main controller){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("CSSECDV - SECURITY Svcs");
@@ -248,6 +250,7 @@ public class Frame extends javax.swing.JFrame {
         this.setVisible(true);
     }
     public void hideButtons(int role){//hides the button when logging in with a specific role
+        rolef=role;
         switch(role){
             case 1://hides all buttons
                 adminBtn.setVisible(false);
