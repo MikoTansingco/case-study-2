@@ -22,29 +22,31 @@ public class LoginSecurityFeatures {
     String username;
     String password;   
     Frame frame;
-    ArrayList<Model.User> users;
-    ArrayList<Integer> attemps = new ArrayList<Integer>();
-
+    int attemps=0;
+    
     public void attemptLogin(String username, String password, Frame frame) {
 
         this.username = username;
         this.password = password;
         this.frame = frame;
-        if(hasError){
-            
-        }
+        
         NullEntry();
         checkValidUser();
-        
 
         if (hasError) {
+            if(attemps>=5){
+                displayMessage("Application Lockout please close the app");
+                addLoginLog("Application Lockout");
+                return;
+            }
+            else{
                 hasError = false;
                 return;      
-            
+            }
             
         }
         addLoginLog("User Login Successful");
-        //attemps=0; reset
+        attemps=0;
         
         frame.mainNav();
 
@@ -63,43 +65,28 @@ public class LoginSecurityFeatures {
         if (hasError) {
             return;
         }
+
+        ArrayList<Model.User> users;
         users = SQLite.getUsers();
-        if(users.size()!=attemps.size()){
-            for(int i = 0; i<users.size();i++){
-                attemps.add(0);
-            }
-        }
-        
-        
+
         for (int i = 0; i < users.size(); i++) {//Loop to iterate the array of users
             String usernameCheckLowerCase = users.get(i).getUsername().toLowerCase();
             String usernameInputLowerCase = username.toLowerCase();
             String passwordDB = users.get(i).getPassword();
             String passwordInput = password;
-            if(usernameCheckLowerCase.equals(usernameInputLowerCase)){
-                if(attemps.get(i)>=5){
-                    displayMessage("Invalid Login");
-                    hasError = true;
-                    break;
-                }   
-            }
+
             if(usernameCheckLowerCase.equals(usernameInputLowerCase)&& passwordDB.equals(password)) {//If statement that checks if the inputed username and password matched properly
-                for(int j = 0; j<users.size();j++){
-                    attemps.set(j,0);
-                }
                 frame.hideButtons(users.get(i).getRole());
                 break;
             }
             else{
-              if(usernameCheckLowerCase.equals(usernameInputLowerCase)){//After iterating the users and found no valid combination of username and password
-                attemps.set(i,attemps.get(i)+1);
-                displayMessage("Invalid Username and/or Password number of tries: "+attemps.get(i));//displays a dialogue box of the error message and the number of attemps
-                addLoginLog(username+" Attempt Made using the password: "+password);//log that an attempt was made and what password was used to prevent password spraying
-                hasError = true;
-                break;
-                   
-                    
-              }
+              if(i+1==users.size()){//After iterating the users and found no valid combination of username and password
+                    attemps++;      //the number of attemps increase
+                    displayMessage("Invalid Username and/or Password number of tries: "+attemps);//displays a dialogue box of the error message and the number of attemps
+                    addLoginLog("User Attempt Made using the password: "+password);//log that an attempt was made and what password was used to prevent password spraying
+                    hasError = true;
+                    break;
+                }      
             }
             
             
