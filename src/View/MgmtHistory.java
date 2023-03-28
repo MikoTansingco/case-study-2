@@ -35,7 +35,7 @@ public class MgmtHistory extends javax.swing.JPanel {
         table.getColumnModel().getColumn(5).setCellRenderer(rightAlign);
         
 //        UNCOMMENT TO DISABLE BUTTONS
-//        searchBtn.setVisible(false);
+        searchBtn.setVisible(false);
 //        reportBtn.setVisible(false);
     }
 
@@ -58,6 +58,10 @@ public class MgmtHistory extends javax.swing.JPanel {
                 history.get(nCtr).getTimestamp()
             });
         }
+    }
+    public void aHisAC(){
+        searchBtn.setVisible(true);
+
     }
     
     public void designer(JTextField component, String text){

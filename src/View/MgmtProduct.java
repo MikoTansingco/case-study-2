@@ -30,9 +30,9 @@ public class MgmtProduct extends javax.swing.JPanel {
 
 //        UNCOMMENT TO DISABLE BUTTONS
 //        purchaseBtn.setVisible(false);
-//        addBtn.setVisible(false);
-//        editBtn.setVisible(false);
-//        deleteBtn.setVisible(false);
+        addBtn.setVisible(false);
+        editBtn.setVisible(false);
+        deleteBtn.setVisible(false);
     }
 
     public void init(){
@@ -50,7 +50,12 @@ public class MgmtProduct extends javax.swing.JPanel {
                 products.get(nCtr).getPrice()});
         }
     }
-    
+        public void smProdAC(){
+        addBtn.setVisible(true);
+        editBtn.setVisible(true);
+        deleteBtn.setVisible(true);
+    }
+        
     public void designer(JTextField component, String text){
         component.setSize(70, 600);
         component.setFont(new java.awt.Font("Tahoma", 0, 18));
