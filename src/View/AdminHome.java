@@ -6,6 +6,7 @@
 package View;
 //[255,102,51]
 import Controller.SQLite;
+import static Controller.SessionManagment.addSessionLog;
 import Model.History;
 import Model.Logs;
 import Model.Product;
@@ -30,6 +31,7 @@ public class AdminHome extends javax.swing.JPanel {
     
     public AdminHome() {
         initComponents();
+
     }
     
     public void init(SQLite sqlite){
@@ -44,19 +46,18 @@ public class AdminHome extends javax.swing.JPanel {
         Content.add(this.mgmtHistory, "mgmtHistory");
         Content.add(this.mgmtProduct, "mgmtProduct");
         Content.add(this.mgmtLogs, "mgmtLogs");
-        mgmtUser.aUserAC();
-        mgmtHistory.aHisAC();
+        
 //        UNCOMMENT TO DISABLE BUTTONS
 //        historyBtn.setVisible(false);
 //        usersBtn.setVisible(false);
 //        productsBtn.setVisible(false);
 //        logsBtn.setVisible(false);
+
     }
     
     public void showPnl(String panelName){
         contentView.show(Content, panelName);
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -157,6 +158,7 @@ public class AdminHome extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void usersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersBtnActionPerformed
+        addSessionLog("Users Button Pressed");
         mgmtUser.init();
         usersBtn.setForeground(Color.red);
         productsBtn.setForeground(Color.black);

@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Main;
+import static Controller.SessionManagment.removeSt;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -200,8 +201,9 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_clientBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-
+        removeSt();
         unhideButtons();
+        DefaultHomes();
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
 
@@ -216,8 +218,6 @@ public class Frame extends javax.swing.JFrame {
     
     private CardLayout contentView = new CardLayout();
     private CardLayout frameView = new CardLayout();
-    
-    private int rolef = 0;
     
     public void init(Main controller){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -250,7 +250,6 @@ public class Frame extends javax.swing.JFrame {
         this.setVisible(true);
     }
     public void hideButtons(int role){//hides the button when logging in with a specific role
-        rolef=role;
         switch(role){
             case 1://hides all buttons
                 adminBtn.setVisible(false);
@@ -290,6 +289,12 @@ public class Frame extends javax.swing.JFrame {
             managerBtn.setVisible(true);
             staffBtn.setVisible(true);
                 
+    }
+    public void DefaultHomes(){//unhides the buttons after logging out
+            clientHomePnl.showPnl("home");
+            staffHomePnl.showPnl("home");
+            managerHomePnl.showPnl("home");
+            adminHomePnl.showPnl("home");           
     }
     
     public void mainNav(){
