@@ -2,6 +2,7 @@ package View;
 
 import Controller.Main;
 import Controller.CentralizedAccessControl;
+import Controller.SQLite;
 
 import Model.User;
 import java.awt.BorderLayout;
@@ -12,20 +13,41 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-
-
 public class Frame extends javax.swing.JFrame {
 
+    public Main main;
+    public Login loginPnl = new Login();
+    public Register registerPnl = new Register();
     
+    private AdminHome adminHomePnl;
+    private ManagerHome managerHomePnl;
+    private StaffHome staffHomePnl;
+    private ClientHome clientHomePnl;
+    
+    private CardLayout contentView = new CardLayout();
+    private CardLayout frameView = new CardLayout();
     private User user;
+    private CentralizedAccessControl centralizedAccessControl;
     
     public Frame() {
         initComponents();
+
     }
     
     public void SetUser(User user)
     {
         this.user = user;
+        centralizedAccessControl = new CentralizedAccessControl(user, main.sqlite);
+        
+        clientHomePnl.SetUser(user);
+        staffHomePnl.SetUser(user);
+        managerHomePnl.SetUser(user);
+        adminHomePnl.SetUser(user);
+        
+        clientHomePnl.init();
+        staffHomePnl.init();
+        managerHomePnl.init();
+        adminHomePnl.init();
     }
     
     @SuppressWarnings("unchecked")
@@ -220,32 +242,20 @@ public class Frame extends javax.swing.JFrame {
         unhideButtons();
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
-
-    public Main main;
-    public Login loginPnl = new Login();
-    public Register registerPnl = new Register();
-    
-    private AdminHome adminHomePnl = new AdminHome(user);
-    private ManagerHome managerHomePnl = new ManagerHome(user);
-    private StaffHome staffHomePnl = new StaffHome(user);
-    private ClientHome clientHomePnl = new ClientHome(user);
-    
-    private CardLayout contentView = new CardLayout();
-    private CardLayout frameView = new CardLayout();
     
     public void init(Main controller){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("CSSECDV - SECURITY Svcs");
         this.setLocationRelativeTo(null);
-        
+       
         this.main = controller;
         loginPnl.frame = this;
         registerPnl.frame = this;
-
-        clientHomePnl.init(main.sqlite);
-        staffHomePnl.init(main.sqlite);
-        managerHomePnl.init(main.sqlite);
-        adminHomePnl.init(main.sqlite);
+        
+        adminHomePnl = new AdminHome(main.sqlite);
+        managerHomePnl = new ManagerHome(main.sqlite);
+        staffHomePnl = new StaffHome(main.sqlite);
+        clientHomePnl = new ClientHome( main.sqlite);
         
         Container.setLayout(frameView);
         Container.add(loginPnl, "loginPnl");
@@ -258,19 +268,18 @@ public class Frame extends javax.swing.JFrame {
         Content.add(managerHomePnl, "managerHomePnl");
         Content.add(adminHomePnl, "adminHomePnl");
         Content.add(staffHomePnl, "staffHomePnl");
-        
+      
         this.setVisible(true);
     }
     
-    public void hideButtons(int role){
+    public void hideButtons(){
         //hides the button when logging in with a specific role
-        CentralizedAccessControl.hideButtons(role, adminBtn, clientBtn, managerBtn, staffBtn,
+        centralizedAccessControl.hideButtons(adminBtn, clientBtn, managerBtn, staffBtn,
             contentView, Content);
-        
     }
     
     public void unhideButtons(){//unhides the buttons after logging out
-            CentralizedAccessControl.unhideButtons(adminBtn, clientBtn, managerBtn, staffBtn);
+            centralizedAccessControl.unhideButtons(adminBtn, clientBtn, managerBtn, staffBtn);
     }
     
     public void mainNav(){

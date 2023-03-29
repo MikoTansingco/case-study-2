@@ -56,7 +56,6 @@ public class RegisterSecurityFeatures {
         frame.registerAction(username, hashPasswordToMD5(this.password), hashPasswordToMD5(this.confpass));
         frame.loginNav();
         
-        
         addRegisterLog("User creation successful");
     }
     

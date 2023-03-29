@@ -5,31 +5,32 @@
  */
 package View;
 
-import Controller.Initializable;
 import Controller.SQLite;
 import Model.Logs;
 import Model.User;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import Controller.MgmtTab;
 
 /**
  *
  * @author beepxD
  */
-public class MgmtLogs extends javax.swing.JPanel implements Initializable{
+public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
     
     private User user;
+    private String tabName;
     
-    public MgmtLogs(SQLite sqlite, User user) {
+    public MgmtLogs(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
         this.user = user;
+        this.tabName = tabName;
         tableModel = (DefaultTableModel)table.getModel();
         table.getTableHeader().setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
-        
 //        UNCOMMENT TO DISABLE BUTTONS
 //        clearBtn.setVisible(false);
 //        debugBtn.setVisible(false);
@@ -160,4 +161,9 @@ public class MgmtLogs extends javax.swing.JPanel implements Initializable{
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public String getTabName() {
+        return this.tabName;
+    }
 }

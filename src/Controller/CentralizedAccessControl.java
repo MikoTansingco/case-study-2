@@ -13,19 +13,35 @@ import View.MgmtUser;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.GroupLayout.Group;
 /**
  *
  * @author Miko Tansingco
  */
-public class CentralizedAccessControl {
+public final class CentralizedAccessControl {
     
-    public static void hideButtons(int role, JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn,
+    MgmtLogs mgmtLogs;
+    MgmtProduct mgmtProduct;
+    MgmtHistory mgmtHistory;
+    MgmtUser mgmtUser;
+        
+    User user;
+    SQLite sqlite;
+    
+    HashMap<MgmtTab,JButton> tabAndButton = new HashMap<MgmtTab,JButton>();
+    
+    public CentralizedAccessControl(User user, SQLite sqlite){
+        this.user = user;
+        this.sqlite = sqlite;
+    }
+    
+    public void hideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn,
             CardLayout contentView, JPanel content){
         //hides the button when logging in with a specific role
         
-        switch(role){
+        switch(user.getRole()){
             case 1://hides all buttons
                 adminBtn.setVisible(false);
                 clientBtn.setVisible(false);
@@ -59,72 +75,36 @@ public class CentralizedAccessControl {
         }
     }
 
-    public static void unhideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn){//unhides the buttons after logging out
+    public void unhideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn){//unhides the buttons after logging out
             adminBtn.setVisible(true);
             clientBtn.setVisible(true);
             managerBtn.setVisible(true);
             staffBtn.setVisible(true);
-                
     }
     
-    public static void SetAvailableButtons(User user, JPanel content, JPanel panel, CardLayout contentView,
-    SQLite sqlite){
-       
-        MgmtHistory mgmtHistory = new MgmtHistory(sqlite, user);
-        MgmtLogs mgmtLogs = new MgmtLogs(sqlite, user);
-        MgmtProduct mgmtProduct = new MgmtProduct(sqlite, user);
-        MgmtUser mgmtUser = new MgmtUser(sqlite, user);
-       
+    public void SetAvailableButtons(JPanel content, JPanel panel, CardLayout contentView){
+        InitButtonsBasedOnAccess();
         content.setLayout(contentView);
-        content.add(new Home("WELCOME MANAGER!", new java.awt.Color(153,102,255)), "home");
-        content.add(mgmtUser, "mgmtUser");
-        content.add(mgmtHistory, "mgmtHistory");
-        content.add(mgmtProduct, "mgmtProduct");
-        content.add(mgmtLogs, "mgmtLogs");
+        
+        for(MgmtTab tab : tabAndButton.keySet())
+            content.add((Component) tab, tab.getTabName());
         
         ButtonFunction buttonFunction;
         
         GroupLayout layout = new GroupLayout(panel);
         panel.setLayout(layout);
         
-        ArrayList<Initializable> mgmts = new ArrayList<Initializable>();
-        ArrayList<JButton> buttons = new ArrayList<JButton>();
-        
-        JButton usersBtn = new JButton("USERS");
-        JButton productsBtn = new JButton("PRODUCTS");
-        JButton historyBtn = new JButton("HISTORY");
-        JButton logsBtn = new JButton("LOGS");
-        
-        usersBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        productsBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        historyBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        logsBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        
-        buttons.add(usersBtn);
-        buttons.add(productsBtn);
-        buttons.add(historyBtn);
-        buttons.add(logsBtn);
-        
-        mgmts.add(mgmtUser);
-        mgmts.add(mgmtProduct);
-        mgmts.add(mgmtHistory);
-        mgmts.add(mgmtLogs);
-        
-        
-        
         
         Group horizontalButtonGroup = layout.createSequentialGroup();
         Group verticalButtonGroup = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE);
         
-        for(int i = 0; i < buttons.size(); i++){
-            buttonFunction = new ButtonFunction(buttons,i,content,mgmts.get(i),contentView);
-            buttons.get(i).addActionListener(buttonFunction);
-            
-            
-            horizontalButtonGroup.addComponent(buttons.get(i), javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-            verticalButtonGroup.addComponent(buttons.get(i), javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE);
+        for(MgmtTab tab : tabAndButton.keySet())
+        {
+            buttonFunction = new ButtonFunction(tabAndButton.values(),tabAndButton.get(tab),content,tab,contentView);
+            tabAndButton.get(tab).addActionListener(buttonFunction);
+            horizontalButtonGroup.addComponent(tabAndButton.get(tab), javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+            verticalButtonGroup.addComponent(tabAndButton.get(tab), javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE);
         }
-        
         
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,4 +125,46 @@ public class CentralizedAccessControl {
                 .addContainerGap())
         );
     }
+    
+    public void InitButtonsBasedOnAccess(){
+        mgmtLogs = new MgmtLogs(sqlite, user, "mgmtUser");
+        mgmtProduct = new MgmtProduct(sqlite, user, "mgmtProduct");
+        mgmtHistory = new MgmtHistory(sqlite, user, "mgmtHistory");
+        mgmtUser = new MgmtUser(sqlite, user, "mgmtLogs");
+        
+        JButton usersBtn = new JButton("USERS");
+        JButton productsBtn = new JButton("PRODUCTS");
+        JButton historyBtn = new JButton("HISTORY");
+        JButton logsBtn = new JButton("LOGS");
+        
+        usersBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
+        productsBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
+        historyBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
+        logsBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
+                
+        switch(user.getRole()){
+            case 1: break;
+            case 2: //Client
+                tabAndButton.put(mgmtProduct, productsBtn);
+                tabAndButton.put(mgmtHistory, historyBtn);
+                tabAndButton.put(mgmtUser,usersBtn);
+                break;
+
+            case 3: //Staff 
+                tabAndButton.put(mgmtProduct, productsBtn);
+                break;
+
+            case 4: //Manager
+                tabAndButton.put(mgmtProduct, productsBtn);
+                tabAndButton.put(mgmtHistory, historyBtn);
+                break;
+                
+            case 5: //Admin 
+                tabAndButton.put(mgmtUser, usersBtn);
+                tabAndButton.put(mgmtLogs, logsBtn);
+                break;
+                
+            default:
+            }
+    }   
 }

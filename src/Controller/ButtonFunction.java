@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -18,33 +20,32 @@ import javax.swing.JPanel;
  */
 public class ButtonFunction implements ActionListener{
     
-    ArrayList<JButton> buttons;
-    JPanel parent;
-    int index;
-    Initializable init;
+    List<JButton> buttons;
+    JPanel content;
+    JButton currentButton;
+    MgmtTab mgmtTab;
     CardLayout contentView;
     
-    public ButtonFunction(ArrayList<JButton> buttons, int index, JPanel parent, Initializable init, CardLayout contentView){
-        this.buttons = buttons;
-        this.index = index;
-        this.parent = parent;
-        this.init = init;
+    public ButtonFunction(Collection<JButton> buttons, JButton currentButton, JPanel content, MgmtTab mgmtTab, CardLayout contentView){
+        this.buttons = new ArrayList(buttons);
+        this.currentButton = currentButton;
+        this.content = content;
+        this.mgmtTab = mgmtTab;
         this.contentView = contentView;
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
         
-        init.init();
+        mgmtTab.init();
         
         for(int i = 0; i < buttons.size(); i++)
-            if(i == index)
+            if(buttons.get(i).equals(currentButton))
                 this.buttons.get(i).setForeground(Color.red);
             else this.buttons.get(i).setForeground(Color.black);
         
-        
         //System.out.println("Button has an action");
-        contentView.show(parent, "Management");
+        contentView.show(content, mgmtTab.getTabName());
     }
     
 }

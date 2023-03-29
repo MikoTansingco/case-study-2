@@ -29,14 +29,21 @@ public class AdminHome extends javax.swing.JPanel {
     
     private CardLayout contentView = new CardLayout();
     private User user;
+    private SQLite sqlite;
+    private CentralizedAccessControl centralizedAccessControl;
     
-    public AdminHome(User user) {
+    public AdminHome(SQLite sqlite) {
         initComponents();
+        this.sqlite = sqlite;
+    }
+    
+    public void SetUser(User user){
         this.user = user;
     }
     
-    public void init(SQLite sqlite){
-        CentralizedAccessControl.SetAvailableButtons(user, Content, this, contentView, sqlite);
+    public void init(){
+        centralizedAccessControl = new CentralizedAccessControl(user,sqlite);
+        centralizedAccessControl.SetAvailableButtons(Content, this, contentView);
         
 //        UNCOMMENT TO DISABLE BUTTONS
 //        historyBtn.setVisible(false);

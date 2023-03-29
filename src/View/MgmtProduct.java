@@ -5,7 +5,6 @@
  */
 package View;
 
-import Controller.Initializable;
 import Controller.SQLite;
 import Model.Product;
 import Model.User;
@@ -14,22 +13,25 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import Controller.MgmtTab;
 
 /**
  *
  * @author beepxD
  */
-public class MgmtProduct extends javax.swing.JPanel implements Initializable{
+public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
     
     private User user;
+    private String tabName;
     
-    public MgmtProduct(SQLite sqlite, User user) {
+    public MgmtProduct(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
         this.user = user;
+        this.tabName = tabName;
         tableModel = (DefaultTableModel)table.getModel();
         table.getTableHeader().setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
 
@@ -46,6 +48,7 @@ public class MgmtProduct extends javax.swing.JPanel implements Initializable{
         for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){
             tableModel.removeRow(0);
         }
+     
         
 //      LOAD CONTENTS
         ArrayList<Product> products = sqlite.getProduct();
@@ -261,4 +264,9 @@ public class MgmtProduct extends javax.swing.JPanel implements Initializable{
     private javax.swing.JButton purchaseBtn;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public String getTabName() {
+        return this.tabName;
+    }
 }

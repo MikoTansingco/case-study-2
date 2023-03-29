@@ -8,7 +8,7 @@ package Controller;
  *
  * @author Miko Tansingco
  */
-public interface Initializable {
+public interface MgmtTab {
     public abstract void init();
-    
+    public abstract String getTabName();
 }

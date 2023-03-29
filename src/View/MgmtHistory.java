@@ -13,24 +13,26 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import Controller.Initializable;
+import Controller.MgmtTab;
 
 
 /**
  *
  * @author beepxD
  */
-public class MgmtHistory extends javax.swing.JPanel implements Initializable {
+public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
    
     private User user;
+    private String tabName;
     
-    public MgmtHistory(SQLite sqlite, User user) {
+    public MgmtHistory(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
         this.user = user;
+        this.tabName = tabName;
         tableModel = (DefaultTableModel)table.getModel();
         table.getTableHeader().setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
         javax.swing.table.DefaultTableCellRenderer rightAlign = new javax.swing.table.DefaultTableCellRenderer();
@@ -51,7 +53,6 @@ public class MgmtHistory extends javax.swing.JPanel implements Initializable {
         for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){
             tableModel.removeRow(0);
         }
-       
         
 //      LOAD CONTENTS
         ArrayList<History> history = sqlite.getHistory(user);     
@@ -216,4 +217,9 @@ public class MgmtHistory extends javax.swing.JPanel implements Initializable {
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public String getTabName() {
+        return this.tabName;
+    }
 }

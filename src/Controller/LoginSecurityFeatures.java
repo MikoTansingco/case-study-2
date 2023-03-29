@@ -32,14 +32,18 @@ public class LoginSecurityFeatures {
     
     public void attemptLogin(String username, String password, Frame frame) {
         
+        boolean isTesting = false;
+        
         this.username = username;
         this.password = password;
         this.frame = frame;
         
-        
+        if(!isTesting)
+        {
+            
         NullEntry();
         checkValidUser();
-
+        
         if (hasError || user == null) {
             if(attemps>=5){
                 displayMessage("Application Lockout please close the app");
@@ -52,15 +56,14 @@ public class LoginSecurityFeatures {
                 return;      
             }    
             }
-            frame.hideButtons(user.getRole());
+        }
         
         addLoginLog("User Login Successful");
         attemps=0;
-        
+       
         frame.SetUser(user);
+        frame.hideButtons();
         frame.mainNav();
-
-        //addRegisterLog("User creation successful");
     }
     void NullEntry() { //Function that checks if there's an input in the textfield
         if (hasError) {
