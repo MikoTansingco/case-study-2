@@ -5,8 +5,10 @@
  */
 package View;
 
+import Controller.Initializable;
 import Controller.SQLite;
 import Model.Logs;
+import Model.User;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
@@ -14,22 +16,28 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author beepxD
  */
-public class MgmtLogs extends javax.swing.JPanel {
+public class MgmtLogs extends javax.swing.JPanel implements Initializable{
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
     
-    public MgmtLogs(SQLite sqlite) {
+    private User user;
+    
+    public MgmtLogs(SQLite sqlite, User user) {
         initComponents();
         this.sqlite = sqlite;
+        this.user = user;
         tableModel = (DefaultTableModel)table.getModel();
         table.getTableHeader().setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
         
 //        UNCOMMENT TO DISABLE BUTTONS
 //        clearBtn.setVisible(false);
 //        debugBtn.setVisible(false);
+
+        //System.out.println("KAMUSTA MUNDO!!!");
     }
 
+    @Override
     public void init(){
         //      CLEAR TABLE
         for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){

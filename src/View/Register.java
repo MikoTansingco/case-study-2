@@ -1,13 +1,5 @@
 
 package View;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import Controller.RegisterSecurityFeatures;
 
 public class Register extends javax.swing.JPanel {
@@ -16,6 +8,7 @@ public class Register extends javax.swing.JPanel {
     
     public Register() {
         initComponents();
+        //System.out.print("HELLO WORLD");
     }
 
     @SuppressWarnings("unchecked")

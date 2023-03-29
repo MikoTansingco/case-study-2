@@ -188,7 +188,7 @@ public class RegisterSecurityFeatures {
           e.printStackTrace();
         }
         
-        System.out.println("Hashed Password: " + generatedPassword);
+        //System.out.println("Hashed Password: " + generatedPassword);
         
         return generatedPassword;
     }

@@ -1,17 +1,33 @@
 package View;
 
 import Controller.Main;
+import Controller.CentralizedAccessControl;
+
+import Model.User;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
+
+
 public class Frame extends javax.swing.JFrame {
 
+    
+    private User user;
+    
     public Frame() {
         initComponents();
     }
-
+    
+    public void SetUser(User user)
+    {
+        this.user = user;
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -209,10 +225,10 @@ public class Frame extends javax.swing.JFrame {
     public Login loginPnl = new Login();
     public Register registerPnl = new Register();
     
-    private AdminHome adminHomePnl = new AdminHome();
-    private ManagerHome managerHomePnl = new ManagerHome();
-    private StaffHome staffHomePnl = new StaffHome();
-    private ClientHome clientHomePnl = new ClientHome();
+    private AdminHome adminHomePnl = new AdminHome(user);
+    private ManagerHome managerHomePnl = new ManagerHome(user);
+    private StaffHome staffHomePnl = new StaffHome(user);
+    private ClientHome clientHomePnl = new ClientHome(user);
     
     private CardLayout contentView = new CardLayout();
     private CardLayout frameView = new CardLayout();
@@ -225,8 +241,6 @@ public class Frame extends javax.swing.JFrame {
         this.main = controller;
         loginPnl.frame = this;
         registerPnl.frame = this;
-        
-        
 
         clientHomePnl.init(main.sqlite);
         staffHomePnl.init(main.sqlite);
@@ -247,46 +261,16 @@ public class Frame extends javax.swing.JFrame {
         
         this.setVisible(true);
     }
-    public void hideButtons(int role){//hides the button when logging in with a specific role
-        switch(role){
-            case 1://hides all buttons
-                adminBtn.setVisible(false);
-                clientBtn.setVisible(false);
-                managerBtn.setVisible(false);
-                staffBtn.setVisible(false);
-                break;
-            case 2://hide all except client home
-                adminBtn.setVisible(false);
-                managerBtn.setVisible(false);
-                staffBtn.setVisible(false);
-                contentView.show(Content, "clientHomePnl");
-                break;
-            case 3://hide all except staff home
-                adminBtn.setVisible(false);
-                managerBtn.setVisible(false);
-                clientBtn.setVisible(false);
-                contentView.show(Content, "staffHomePnl");
-                break;
-            case 4://hide all except manager home
-                adminBtn.setVisible(false);
-                clientBtn.setVisible(false);
-                staffBtn.setVisible(false);
-                contentView.show(Content, "managerHomePnl");
-                break;
-            case 5://hide all except admin home
-                clientBtn.setVisible(false);
-                managerBtn.setVisible(false);
-                staffBtn.setVisible(false);
-                contentView.show(Content, "adminHomePnl");
-                break;
-        }
+    
+    public void hideButtons(int role){
+        //hides the button when logging in with a specific role
+        CentralizedAccessControl.hideButtons(role, adminBtn, clientBtn, managerBtn, staffBtn,
+            contentView, Content);
+        
     }
+    
     public void unhideButtons(){//unhides the buttons after logging out
-            adminBtn.setVisible(true);
-            clientBtn.setVisible(true);
-            managerBtn.setVisible(true);
-            staffBtn.setVisible(true);
-                
+            CentralizedAccessControl.unhideButtons(adminBtn, clientBtn, managerBtn, staffBtn);
     }
     
     public void mainNav(){

@@ -197,9 +197,10 @@ public class SQLite {
         }
     }
     
-    
-    public ArrayList<History> getHistory(){
+    public ArrayList<History> getHistory(User user){
+        
         String sql = "SELECT id, username, name, stock, timestamp FROM history";
+        
         ArrayList<History> histories = new ArrayList<History>();
         
         try (Connection conn = DriverManager.getConnection(driverURL);
@@ -218,6 +219,8 @@ public class SQLite {
         }
         return histories;
     }
+    
+    
     
     public ArrayList<Logs> getLogs(){
         String sql = "SELECT id, event, username, desc, timestamp FROM logs";

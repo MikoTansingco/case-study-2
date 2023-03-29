@@ -5,8 +5,10 @@
  */
 package View;
 
+import Controller.Initializable;
 import Controller.SQLite;
 import Model.Product;
+import Model.User;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -17,14 +19,17 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author beepxD
  */
-public class MgmtProduct extends javax.swing.JPanel {
+public class MgmtProduct extends javax.swing.JPanel implements Initializable{
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
     
-    public MgmtProduct(SQLite sqlite) {
+    private User user;
+    
+    public MgmtProduct(SQLite sqlite, User user) {
         initComponents();
         this.sqlite = sqlite;
+        this.user = user;
         tableModel = (DefaultTableModel)table.getModel();
         table.getTableHeader().setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
 
@@ -35,6 +40,7 @@ public class MgmtProduct extends javax.swing.JPanel {
 //        deleteBtn.setVisible(false);
     }
 
+    @Override
     public void init(){
         //      CLEAR TABLE
         for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){

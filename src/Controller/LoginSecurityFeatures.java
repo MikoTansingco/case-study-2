@@ -5,10 +5,13 @@
 package Controller;
 
 
+import Model.User;
 import static java.awt.image.ImageObserver.HEIGHT;
 import javax.swing.JOptionPane;
 
 import View.Frame;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -24,30 +27,37 @@ public class LoginSecurityFeatures {
     Frame frame;
     int attemps=0;
     
+    
+    public User user;
+    
     public void attemptLogin(String username, String password, Frame frame) {
-
+        
         this.username = username;
         this.password = password;
         this.frame = frame;
         
+        
         NullEntry();
         checkValidUser();
 
-        if (hasError) {
+        if (hasError || user == null) {
             if(attemps>=5){
                 displayMessage("Application Lockout please close the app");
                 addLoginLog("Application Lockout");
+                
                 return;
             }
             else{
                 hasError = false;
                 return;      
+            }    
             }
-            
-        }
+            frame.hideButtons(user.getRole());
+        
         addLoginLog("User Login Successful");
         attemps=0;
         
+        frame.SetUser(user);
         frame.mainNav();
 
         //addRegisterLog("User creation successful");
@@ -66,17 +76,18 @@ public class LoginSecurityFeatures {
             return;
         }
 
-        ArrayList<Model.User> users;
+        ArrayList<User> users;
         users = SQLite.getUsers();
-
+        
+        String usernameInputLowerCase = username.toLowerCase();
+        String hashedPassword = hashPasswordToMD5(password);
+        
         for (int i = 0; i < users.size(); i++) {//Loop to iterate the array of users
-            String usernameCheckLowerCase = users.get(i).getUsername().toLowerCase();
-            String usernameInputLowerCase = username.toLowerCase();
+            String usernameDB = users.get(i).getUsername().toLowerCase();
             String passwordDB = users.get(i).getPassword();
-            String passwordInput = password;
 
-            if(usernameCheckLowerCase.equals(usernameInputLowerCase)&& passwordDB.equals(password)) {//If statement that checks if the inputed username and password matched properly
-                frame.hideButtons(users.get(i).getRole());
+            if(usernameDB.equals(usernameInputLowerCase)&& passwordDB.equals(hashedPassword)) {//If statement that checks if the inputed username and password matched properly
+                user = users.get(i);
                 break;
             }
             else{
@@ -104,5 +115,36 @@ public class LoginSecurityFeatures {
 
     }
 
-    
+    String hashPasswordToMD5(String password){
+        //Courtesy of https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/#:~:text=The%20MD5%20Message%2DDigest%20Algorithm,chunks%20of%20512%2Dbit%20blocks.
+        String generatedPassword = null;
+        
+        try 
+        {
+          // Create MessageDigest instance for MD5
+          MessageDigest md = MessageDigest.getInstance("MD5");
+
+          // Add password bytes to digest
+          md.update(password.getBytes());
+
+          // Get the hash's bytes
+          byte[] bytes = md.digest();
+
+          // This bytes[] has bytes in decimal format. Convert it to hexadecimal format
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < bytes.length; i++) {
+            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+          }
+
+          // Get complete hashed password in hex format
+          generatedPassword = sb.toString();
+          
+        } catch (NoSuchAlgorithmException e) {
+          e.printStackTrace();
+        }
+        
+        //System.out.println("Hashed Password: " + generatedPassword);
+        
+        return generatedPassword;
+    }
 }

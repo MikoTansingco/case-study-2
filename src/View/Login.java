@@ -1,9 +1,12 @@
 package View;
 import Controller.LoginSecurityFeatures;
+
+
 public class Login extends javax.swing.JPanel {
     public Frame frame;
 
     LoginSecurityFeatures login = new LoginSecurityFeatures();
+    
     public Login() {
         initComponents();
     }
@@ -82,12 +85,14 @@ public class Login extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
+        usernameFld.setText("pancakes");
+        passwordFld.setText("Letmein123!");
+        
         login.attemptLogin(usernameFld.getText(), passwordFld.getText(), frame);
+        
         usernameFld.setText(null);
         passwordFld.setText(null);
 
-        
-        
         //frame.mainNav();
     }//GEN-LAST:event_loginBtnActionPerformed
 
