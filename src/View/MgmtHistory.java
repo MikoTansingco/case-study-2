@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.CentralizedAccessControl;
 import Controller.SQLite;
 import Model.History;
 import Model.Product;
@@ -27,6 +28,8 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
    
     private User user;
     private String tabName;
+    
+    private CentralizedAccessControl centralizedAccessControl;
     
     public MgmtHistory(SQLite sqlite, User user, String tabName) {
         initComponents();
@@ -68,6 +71,10 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
                 history.get(nCtr).getTimestamp()
             });
         }
+        
+        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
+        centralizedAccessControl.setHistoryButtons(searchBtn, reloadBtn);
+        
     }
     
     public void designer(JTextField component, String text){
@@ -124,7 +131,6 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
             table.getColumnModel().getColumn(5).setPreferredWidth(240);
         }
 
-        searchBtn.setBackground(new java.awt.Color(255, 255, 255));
         searchBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         searchBtn.setText("SEARCH USERNAME OR PRODUCT");
         searchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -133,7 +139,6 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
             }
         });
 
-        reloadBtn.setBackground(new java.awt.Color(255, 255, 255));
         reloadBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         reloadBtn.setText("RELOAD");
         reloadBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -146,30 +151,29 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(reloadBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+                .addComponent(reloadBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-                    .addComponent(reloadBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(reloadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        JTextField searchFld = new JTextField("0");
+                JTextField searchFld = new JTextField("0");
         designer(searchFld, "SEARCH USERNAME OR PRODUCT");
 
         Object[] message = {
@@ -203,11 +207,13 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
                     });
                 }
             }
+            
+            this.init();
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void reloadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadBtnActionPerformed
-        init();
+        this.init();
     }//GEN-LAST:event_reloadBtnActionPerformed
 
 

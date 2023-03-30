@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.CentralizedAccessControl;
 import Controller.SQLite;
 import Model.Product;
 import Model.User;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import Controller.MgmtTab;
+import java.sql.Timestamp;
 
 /**
  *
@@ -26,6 +28,8 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
     
     private User user;
     private String tabName;
+    
+    private CentralizedAccessControl centralizedAccessControl;
     
     public MgmtProduct(SQLite sqlite, User user, String tabName) {
         initComponents();
@@ -58,6 +62,9 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
                 products.get(nCtr).getStock(), 
                 products.get(nCtr).getPrice()});
         }
+        
+        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
+        centralizedAccessControl.setProductButtons(purchaseBtn, addBtn, editBtn, deleteBtn);
     }
     
     public void designer(JTextField component, String text){
@@ -113,7 +120,6 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             table.getColumnModel().getColumn(2).setMaxWidth(100);
         }
 
-        purchaseBtn.setBackground(new java.awt.Color(255, 255, 255));
         purchaseBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         purchaseBtn.setText("PURCHASE");
         purchaseBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -122,7 +128,6 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
-        addBtn.setBackground(new java.awt.Color(255, 255, 255));
         addBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         addBtn.setText("ADD");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +136,6 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
-        editBtn.setBackground(new java.awt.Color(255, 255, 255));
         editBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         editBtn.setText("EDIT");
         editBtn.setToolTipText("");
@@ -141,7 +145,6 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
-        deleteBtn.setBackground(new java.awt.Color(255, 255, 255));
         deleteBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         deleteBtn.setText("DELETE");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -154,31 +157,30 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(purchaseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(purchaseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addGap(0, 0, 0))
+                .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(purchaseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -195,6 +197,9 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
 
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(stockFld.getText());
+                sqlite.addHistory(user.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0)
+                        , Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
+                this.init();
             }
         }
     }//GEN-LAST:event_purchaseBtnActionPerformed
@@ -218,6 +223,10 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             System.out.println(nameFld.getText());
             System.out.println(stockFld.getText());
             System.out.println(priceFld.getText());
+            
+            sqlite.addProduct(nameFld.getText(), Integer.parseInt(stockFld.getText())
+                    , Double.parseDouble(priceFld.getText()));
+            this.init();
         }
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -242,15 +251,23 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
                 System.out.println(stockFld.getText());
                 System.out.println(priceFld.getText());
             }
+            
+            sqlite.updateProduct( (String) tableModel.getValueAt(table.getSelectedRow(), 0),
+                                   nameFld.getText(),
+                                  Integer.parseInt(stockFld.getText()),
+                                  Double.parseDouble(priceFld.getText()));
+            this.init();
         }
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         if(table.getSelectedRow() >= 0){
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE PRODUCT", JOptionPane.YES_NO_OPTION);
-            
+
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+                this.init();
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed

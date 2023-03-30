@@ -103,6 +103,9 @@ public class Main {
         // Initialize User Interface
         Frame frame = new Frame();
         frame.init(this);
+        
+        //sqlite.test();
+        //System.out.println("HELLO WORLD");
     }
     
 }

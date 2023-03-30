@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.CentralizedAccessControl;
 import Controller.SQLite;
 import Model.Logs;
 import Model.User;
@@ -23,6 +24,8 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
     
     private User user;
     private String tabName;
+    
+    private CentralizedAccessControl centralizedAccessControl;
     
     public MgmtLogs(SQLite sqlite, User user, String tabName) {
         initComponents();
@@ -54,6 +57,9 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
                 logs.get(nCtr).getDesc(), 
                 logs.get(nCtr).getTimestamp()});
         }
+        
+        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
+        centralizedAccessControl.setLogButtons(debugBtn, clearBtn);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -66,8 +72,8 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        clearBtn = new javax.swing.JButton();
         debugBtn = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
 
         table.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -99,16 +105,6 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
             table.getColumnModel().getColumn(3).setPreferredWidth(240);
         }
 
-        clearBtn.setBackground(new java.awt.Color(255, 255, 255));
-        clearBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        clearBtn.setText("CLEAR");
-        clearBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearBtnActionPerformed(evt);
-            }
-        });
-
-        debugBtn.setBackground(new java.awt.Color(255, 255, 255));
         debugBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         debugBtn.setText("ENABLE/DISABLE DEBUG MODE");
         debugBtn.setToolTipText("");
@@ -118,41 +114,49 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
+        clearBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        clearBtn.setText("CLEAR");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(debugBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(debugBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(clearBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(clearBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(debugBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
-        
-    }//GEN-LAST:event_clearBtnActionPerformed
-
     private void debugBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_debugBtnActionPerformed
         if(sqlite.DEBUG_MODE == 1)
-            sqlite.DEBUG_MODE = 0;
+        sqlite.DEBUG_MODE = 0;
         else
-            sqlite.DEBUG_MODE = 1;
+        sqlite.DEBUG_MODE = 1;
     }//GEN-LAST:event_debugBtnActionPerformed
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        sqlite.removeAllLogs();
+    }//GEN-LAST:event_clearBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

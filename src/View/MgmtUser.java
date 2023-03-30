@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.CentralizedAccessControl;
 import Controller.SQLite;
 import Model.User;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
     
     private User user;
     private String tabName;
+    
+    private CentralizedAccessControl centralizedAccessControl;
     
     public MgmtUser(SQLite sqlite, User user, String tabName) {
         initComponents();
@@ -60,6 +63,9 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
                 users.get(nCtr).getRole(), 
                 users.get(nCtr).getLocked()});
         }
+        
+        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
+        centralizedAccessControl.setUserButtons(lockBtn, deleteBtn, lockBtn, chgpassBtn);
     }
 
     public void designer(JTextField component, String text){
@@ -116,7 +122,6 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             table.getColumnModel().getColumn(3).setPreferredWidth(100);
         }
 
-        editRoleBtn.setBackground(new java.awt.Color(255, 255, 255));
         editRoleBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         editRoleBtn.setText("EDIT ROLE");
         editRoleBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -125,7 +130,6 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
-        deleteBtn.setBackground(new java.awt.Color(255, 255, 255));
         deleteBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         deleteBtn.setText("DELETE");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +138,6 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
-        lockBtn.setBackground(new java.awt.Color(255, 255, 255));
         lockBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lockBtn.setText("LOCK/UNLOCK");
         lockBtn.setToolTipText("");
@@ -144,7 +147,6 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             }
         });
 
-        chgpassBtn.setBackground(new java.awt.Color(255, 255, 255));
         chgpassBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         chgpassBtn.setText("CHANGE PASS");
         chgpassBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -157,26 +159,24 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(editRoleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(editRoleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(lockBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(chgpassBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addGap(0, 0, 0))
+                .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(lockBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(chgpassBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(chgpassBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -189,15 +189,18 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
         if(table.getSelectedRow() >= 0){
             String[] options = {"1-DISABLED","2-CLIENT","3-STAFF","4-MANAGER","5-ADMIN"};
             JComboBox optionList = new JComboBox(options);
-            
+
             optionList.setSelectedIndex((int)tableModel.getValueAt(table.getSelectedRow(), 2) - 1);
-            
-            String result = (String) JOptionPane.showInputDialog(null, "USER: " + tableModel.getValueAt(table.getSelectedRow(), 0), 
+
+            String result = (String) JOptionPane.showInputDialog(null, "USER: " + tableModel.getValueAt(table.getSelectedRow(), 0),
                 "EDIT USER ROLE", JOptionPane.QUESTION_MESSAGE, null, options, options[(int)tableModel.getValueAt(table.getSelectedRow(), 2) - 1]);
-            
+
             if(result != null){
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 System.out.println(result.charAt(0));
+                
+                sqlite.updateUserRole((String) tableModel.getValueAt(table.getSelectedRow(), 0),Integer.parseInt(String.valueOf(result.charAt(0))));
+                this.init();
             }
         }
     }//GEN-LAST:event_editRoleBtnActionPerformed
@@ -205,10 +208,11 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         if(table.getSelectedRow() >= 0){
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
-            
+
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 sqlite.removeUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+                this.init();
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
@@ -219,11 +223,13 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             if("1".equals(tableModel.getValueAt(table.getSelectedRow(), 3) + "")){
                 state = "unlock";
             }
-            
+
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
-            
+
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                sqlite.updateUserLock((String) tableModel.getValueAt(table.getSelectedRow(), 0), result);
+                this.init();
             }
         }
     }//GEN-LAST:event_lockBtnActionPerformed
@@ -234,16 +240,19 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             JTextField confpass = new JPasswordField();
             designer(password, "PASSWORD");
             designer(confpass, "CONFIRM PASSWORD");
-            
+
             Object[] message = {
                 "Enter New Password:", password, confpass
             };
 
             int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-            
+
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(password.getText());
                 System.out.println(confpass.getText());
+                
+                sqlite.updateUserPassword((String) tableModel.getValueAt(table.getSelectedRow(), 0), password.getText());
+                this.init();
             }
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed
@@ -262,4 +271,5 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
     public String getTabName() {
         return this.tabName;
     }
+    
 }

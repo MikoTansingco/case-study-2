@@ -82,89 +82,112 @@ public final class CentralizedAccessControl {
             staffBtn.setVisible(true);
     }
     
-    public void SetAvailableButtons(JPanel content, JPanel panel, CardLayout contentView){
-        InitButtonsBasedOnAccess();
-        content.setLayout(contentView);
-        
-        for(MgmtTab tab : tabAndButton.keySet())
-            content.add((Component) tab, tab.getTabName());
-        
-        ButtonFunction buttonFunction;
-        
-        GroupLayout layout = new GroupLayout(panel);
-        panel.setLayout(layout);
-        
-        
-        Group horizontalButtonGroup = layout.createSequentialGroup();
-        Group verticalButtonGroup = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE);
-        
-        for(MgmtTab tab : tabAndButton.keySet())
-        {
-            buttonFunction = new ButtonFunction(tabAndButton.values(),tabAndButton.get(tab),content,tab,contentView);
-            tabAndButton.get(tab).addActionListener(buttonFunction);
-            horizontalButtonGroup.addComponent(tabAndButton.get(tab), javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-            verticalButtonGroup.addComponent(tabAndButton.get(tab), javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE);
+    
+    public void setHomeButtons(JButton history, JButton logs, JButton product, JButton user){
+            
+        switch(this.user.getRole()){
+            case 2://Client
+                history.setVisible(true);
+                logs.setVisible(false);
+                product.setVisible(true);
+                user.setVisible(false);
+                break;
+            case 3://Staff
+                history.setVisible(false);
+                logs.setVisible(false);
+                product.setVisible(true);
+                user.setVisible(false);
+                break;
+            case 4://Manager
+                history.setVisible(true);
+                logs.setVisible(false);
+                product.setVisible(true);
+                user.setVisible(false);
+                break;
+            case 5://Admin
+                history.setVisible(false);
+                logs.setVisible(true);
+                product.setVisible(false);
+                user.setVisible(true);
+                break;
         }
-        
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(horizontalButtonGroup))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(verticalButtonGroup)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
     }
     
-    public void InitButtonsBasedOnAccess(){
-        mgmtLogs = new MgmtLogs(sqlite, user, "mgmtUser");
-        mgmtProduct = new MgmtProduct(sqlite, user, "mgmtProduct");
-        mgmtHistory = new MgmtHistory(sqlite, user, "mgmtHistory");
-        mgmtUser = new MgmtUser(sqlite, user, "mgmtLogs");
+    public void setHistoryButtons(JButton search, JButton reload){
         
-        JButton usersBtn = new JButton("USERS");
-        JButton productsBtn = new JButton("PRODUCTS");
-        JButton historyBtn = new JButton("HISTORY");
-        JButton logsBtn = new JButton("LOGS");
+        switch(this.user.getRole()){
+            case 2://Client
+                search.setVisible(true);
+                reload.setVisible(true);
+                break;
+            case 4://Manager
+                search.setVisible(true);
+                reload.setVisible(true);
+                break;
+            default: 
+                search.setVisible(false);
+                reload.setVisible(false);
+        }
+    }
+    
+    public void setLogButtons(JButton debug, JButton clear){
+        switch(this.user.getRole()){
+            case 5://Admin
+                debug.setVisible(true);
+                clear.setVisible(true);
+                break;
+            default: 
+                debug.setVisible(false);
+                clear.setVisible(false);
+        }
+    }
+    
+    public void setProductButtons(JButton purchase, JButton add, JButton edit, JButton delete){
         
-        usersBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        productsBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        historyBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        logsBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
-                
-        switch(user.getRole()){
-            case 1: break;
-            case 2: //Client
-                tabAndButton.put(mgmtProduct, productsBtn);
-                tabAndButton.put(mgmtHistory, historyBtn);
-                tabAndButton.put(mgmtUser,usersBtn);
+        switch(this.user.getRole()){
+            case 2://Client
+                purchase.setVisible(true);
+                add.setVisible(false);
+                edit.setVisible(false);
+                delete.setVisible(false);
                 break;
-
-            case 3: //Staff 
-                tabAndButton.put(mgmtProduct, productsBtn);
+            case 3://Staff
+                purchase.setVisible(false);
+                add.setVisible(true);
+                edit.setVisible(true);
+                delete.setVisible(true);
                 break;
-
-            case 4: //Manager
-                tabAndButton.put(mgmtProduct, productsBtn);
-                tabAndButton.put(mgmtHistory, historyBtn);
+            case 4://Manager
+                purchase.setVisible(false);
+                add.setVisible(true);
+                edit.setVisible(true);
+                delete.setVisible(true);
                 break;
-                
-            case 5: //Admin 
-                tabAndButton.put(mgmtUser, usersBtn);
-                tabAndButton.put(mgmtLogs, logsBtn);
+            default: 
+                purchase.setVisible(false);
+                add.setVisible(false);
+                edit.setVisible(false);
+                delete.setVisible(false);
                 break;
-                
-            default:
-            }
-    }   
+        }
+    }
+    
+        public void setUserButtons(JButton edit, JButton delete, JButton lock, JButton changePass){
+        
+        switch(this.user.getRole()){
+            case 5://Admin
+                edit.setVisible(true);
+                delete.setVisible(true);
+                lock.setVisible(true);
+                changePass.setVisible(true);
+                break;
+            default: 
+                edit.setVisible(false);
+                delete.setVisible(false);
+                lock.setVisible(false);
+                changePass.setVisible(false);
+                break;
+        }
+    }
+    
 }

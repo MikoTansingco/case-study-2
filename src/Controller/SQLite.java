@@ -277,6 +277,8 @@ public class SQLite {
                                    rs.getString("password"),
                                    rs.getInt("role"),
                                    rs.getInt("locked")));
+                
+
             }
         } catch (Exception ex) {}
         return users;
@@ -320,4 +322,97 @@ public class SQLite {
         }
         return product;
     }
+    
+    public void updateUserRole(String username, int role){
+        
+        String sql = "UPDATE users SET role = '" + role + "' WHERE username = '" + username + "';";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void updateUserLock(String username, int locked){
+        String sql = "UPDATE users SET locked = '" + locked + "' WHERE username = '" + username + "';";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    
+    public void updateUserPassword(String username, String password){
+        
+        password = new RegisterSecurityFeatures().hashPasswordToMD5(password);
+        String sql = "UPDATE users SET password = '" + password + "' WHERE username = '" + username + "';";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    /*
+            "CREATE TABLE IF NOT EXISTS product (\n"
+            + " id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+            + " name TEXT NOT NULL UNIQUE,\n"
+            + " stock INTEGER DEFAULT 0,\n"
+            + " price REAL DEFAULT 0.00\n"
+            + ");";
+    */
+    public void updateProduct(String oldName, String newName, int newStock, double newPrice){
+        String sql = String.format("UPDATE product SET name='%s',stock='%d',price='%f' WHERE name='%s';",
+                newName, newStock, newPrice, oldName);
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void test(){
+        String sql  = "UPDATE users SET locked = '0' WHERE username = 'pancakes';";
+        String sql2 = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            stmt.execute(sql2);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void removeAllLogs(){
+        String sql = "DELETE FROM logs;" ;
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void removeProduct(String name){
+        String sql = "DELETE FROM product WHERE name='" + name + "';";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
 }
