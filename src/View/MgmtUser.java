@@ -17,6 +17,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import Controller.MgmtTab;
+import static Controller.SessionManagment.addSessionLog;
 
 /**
  *
@@ -209,12 +210,14 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 sqlite.removeUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+                addSessionLog("Deleted a user");
                 this.init();
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void lockBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockBtnActionPerformed
+        addSessionLog("Pressed Lock Button");
         if(table.getSelectedRow() >= 0){
             String state = "lock";
             if("1".equals(tableModel.getValueAt(table.getSelectedRow(), 3) + "")){
@@ -245,6 +248,7 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
+                addSessionLog("Changed password");
                 System.out.println(password.getText());
                 System.out.println(confpass.getText());
                 

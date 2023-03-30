@@ -5,6 +5,7 @@
 package Controller;
 
 
+import static Controller.SessionManagment.setSt;
 import Model.User;
 import static java.awt.image.ImageObserver.HEIGHT;
 import javax.swing.JOptionPane;
@@ -59,6 +60,7 @@ public class LoginSecurityFeatures {
         }
         
         addLoginLog("User Login Successful");
+        setSt();
         attemps=0;
        
         frame.SetUser(user);

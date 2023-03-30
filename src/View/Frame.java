@@ -3,6 +3,7 @@ package View;
 import Controller.Main;
 import Controller.CentralizedAccessControl;
 import Controller.SQLite;
+import static Controller.SessionManagment.removeSt;
 
 import Model.User;
 import java.awt.BorderLayout;
@@ -237,7 +238,8 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_clientBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-
+        removeSt();
+        DefaultHomes();
         unhideButtons();
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
@@ -276,6 +278,12 @@ public class Frame extends javax.swing.JFrame {
         CentralizedAccessControl.hideButtons(adminBtn, clientBtn, managerBtn, staffBtn,
             contentView, Content, user);
     }
+    public void DefaultHomes(){//unhides the buttons after logging out
+            clientHomePnl.showPnl("home");
+            staffHomePnl.showPnl("home");
+            managerHomePnl.showPnl("home");
+            adminHomePnl.showPnl("home");           
+    } 
     
     public void unhideButtons(){//unhides the buttons after logging out
             CentralizedAccessControl.unhideButtons(adminBtn, clientBtn, managerBtn, staffBtn, user);
