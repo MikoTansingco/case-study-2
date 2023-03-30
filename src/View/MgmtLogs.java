@@ -25,8 +25,6 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
     private User user;
     private String tabName;
     
-    private CentralizedAccessControl centralizedAccessControl;
-    
     public MgmtLogs(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
@@ -58,8 +56,7 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
                 logs.get(nCtr).getTimestamp()});
         }
         
-        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
-        centralizedAccessControl.setLogButtons(debugBtn, clearBtn);
+        CentralizedAccessControl.setLogButtons(debugBtn, clearBtn, user);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -156,6 +153,7 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         sqlite.removeAllLogs();
+        this.init();
     }//GEN-LAST:event_clearBtnActionPerformed
 
 

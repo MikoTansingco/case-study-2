@@ -29,8 +29,6 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
     private User user;
     private String tabName;
     
-    private CentralizedAccessControl centralizedAccessControl;
-    
     public MgmtHistory(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
@@ -62,6 +60,10 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
         
         for(int nCtr = 0; nCtr < history.size(); nCtr++){
             Product product = sqlite.getProduct(history.get(nCtr).getName());
+            
+            if(product == null)
+                continue;
+            
             tableModel.addRow(new Object[]{
                 history.get(nCtr).getUsername(), 
                 history.get(nCtr).getName(), 
@@ -72,8 +74,7 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
             });
         }
         
-        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
-        centralizedAccessControl.setHistoryButtons(searchBtn, reloadBtn);
+        CentralizedAccessControl.setHistoryButtons(searchBtn, reloadBtn, user);
         
     }
     
@@ -173,7 +174,7 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-                JTextField searchFld = new JTextField("0");
+        JTextField searchFld = new JTextField("0");
         designer(searchFld, "SEARCH USERNAME OR PRODUCT");
 
         Object[] message = {

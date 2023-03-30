@@ -37,7 +37,6 @@ public class Frame extends javax.swing.JFrame {
     public void SetUser(User user)
     {
         this.user = user;
-        centralizedAccessControl = new CentralizedAccessControl(user, main.sqlite);
         
         clientHomePnl.SetUser(user);
         staffHomePnl.SetUser(user);
@@ -274,12 +273,12 @@ public class Frame extends javax.swing.JFrame {
     
     public void hideButtons(){
         //hides the button when logging in with a specific role
-        centralizedAccessControl.hideButtons(adminBtn, clientBtn, managerBtn, staffBtn,
-            contentView, Content);
+        CentralizedAccessControl.hideButtons(adminBtn, clientBtn, managerBtn, staffBtn,
+            contentView, Content, user);
     }
     
     public void unhideButtons(){//unhides the buttons after logging out
-            centralizedAccessControl.unhideButtons(adminBtn, clientBtn, managerBtn, staffBtn);
+            CentralizedAccessControl.unhideButtons(adminBtn, clientBtn, managerBtn, staffBtn, user);
     }
     
     public void mainNav(){

@@ -201,6 +201,13 @@ public class SQLite {
         
         String sql = "SELECT id, username, name, stock, timestamp FROM history";
         
+        boolean hasAuthority = CentralizedAccessControl.checkAuthority(user, "getHistory");
+        if(!hasAuthority)
+            sql += " WHERE username= '" + user.getUsername() + "';";
+        else sql += ";";
+        
+        //System.out.print(sql);
+        
         ArrayList<History> histories = new ArrayList<History>();
         
         try (Connection conn = DriverManager.getConnection(driverURL);
@@ -380,18 +387,6 @@ public class SQLite {
         }
     }
     
-    public void test(){
-        String sql  = "UPDATE users SET locked = '0' WHERE username = 'pancakes';";
-        String sql2 = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
-        
-        try (Connection conn = DriverManager.getConnection(driverURL);
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            stmt.execute(sql2);
-        } catch (Exception ex) {
-            System.out.print(ex);
-        }
-    }
     
     public void removeAllLogs(){
         String sql = "DELETE FROM logs;" ;
@@ -415,4 +410,15 @@ public class SQLite {
         }
     }
     
+    
+    public void test(){
+        String sql = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
 }

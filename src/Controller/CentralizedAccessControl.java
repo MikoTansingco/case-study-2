@@ -20,25 +20,11 @@ import javax.swing.GroupLayout.Group;
  *
  * @author Miko Tansingco
  */
-public final class CentralizedAccessControl {
+public class CentralizedAccessControl {
     
-    MgmtLogs mgmtLogs;
-    MgmtProduct mgmtProduct;
-    MgmtHistory mgmtHistory;
-    MgmtUser mgmtUser;
-        
-    User user;
-    SQLite sqlite;
     
-    HashMap<MgmtTab,JButton> tabAndButton = new HashMap<MgmtTab,JButton>();
-    
-    public CentralizedAccessControl(User user, SQLite sqlite){
-        this.user = user;
-        this.sqlite = sqlite;
-    }
-    
-    public void hideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn,
-            CardLayout contentView, JPanel content){
+    public static void hideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn,
+            CardLayout contentView, JPanel content, User user){
         //hides the button when logging in with a specific role
         
         switch(user.getRole()){
@@ -75,7 +61,8 @@ public final class CentralizedAccessControl {
         }
     }
 
-    public void unhideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn){//unhides the buttons after logging out
+    public static void unhideButtons(JButton adminBtn, JButton clientBtn, JButton managerBtn, JButton staffBtn,
+            User user){//unhides the buttons after logging out
             adminBtn.setVisible(true);
             clientBtn.setVisible(true);
             managerBtn.setVisible(true);
@@ -83,39 +70,39 @@ public final class CentralizedAccessControl {
     }
     
     
-    public void setHomeButtons(JButton history, JButton logs, JButton product, JButton user){
+    public static void setHomeButtons(JButton history, JButton logs, JButton product, JButton jUser, User user){
             
-        switch(this.user.getRole()){
+        switch(user.getRole()){
             case 2://Client
                 history.setVisible(true);
                 logs.setVisible(false);
                 product.setVisible(true);
-                user.setVisible(false);
+                jUser.setVisible(false);
                 break;
             case 3://Staff
                 history.setVisible(false);
                 logs.setVisible(false);
                 product.setVisible(true);
-                user.setVisible(false);
+                jUser.setVisible(false);
                 break;
             case 4://Manager
                 history.setVisible(true);
                 logs.setVisible(false);
                 product.setVisible(true);
-                user.setVisible(false);
+                jUser.setVisible(false);
                 break;
             case 5://Admin
                 history.setVisible(false);
                 logs.setVisible(true);
                 product.setVisible(false);
-                user.setVisible(true);
+                jUser.setVisible(true);
                 break;
         }
     }
     
-    public void setHistoryButtons(JButton search, JButton reload){
+    public static void setHistoryButtons(JButton search, JButton reload, User user){
         
-        switch(this.user.getRole()){
+        switch(user.getRole()){
             case 2://Client
                 search.setVisible(true);
                 reload.setVisible(true);
@@ -130,8 +117,8 @@ public final class CentralizedAccessControl {
         }
     }
     
-    public void setLogButtons(JButton debug, JButton clear){
-        switch(this.user.getRole()){
+    public static void setLogButtons(JButton debug, JButton clear, User user){
+        switch(user.getRole()){
             case 5://Admin
                 debug.setVisible(true);
                 clear.setVisible(true);
@@ -142,9 +129,9 @@ public final class CentralizedAccessControl {
         }
     }
     
-    public void setProductButtons(JButton purchase, JButton add, JButton edit, JButton delete){
+    public static void setProductButtons(JButton purchase, JButton add, JButton edit, JButton delete, User user){
         
-        switch(this.user.getRole()){
+        switch(user.getRole()){
             case 2://Client
                 purchase.setVisible(true);
                 add.setVisible(false);
@@ -172,9 +159,9 @@ public final class CentralizedAccessControl {
         }
     }
     
-        public void setUserButtons(JButton edit, JButton delete, JButton lock, JButton changePass){
+    public static void setUserButtons(JButton edit, JButton delete, JButton lock, JButton changePass, User user){
         
-        switch(this.user.getRole()){
+        switch(user.getRole()){
             case 5://Admin
                 edit.setVisible(true);
                 delete.setVisible(true);
@@ -189,5 +176,19 @@ public final class CentralizedAccessControl {
                 break;
         }
     }
+        
+    public static boolean checkAuthority(User user, String purpose){
+        
+        switch(purpose){
+            case "getHistory":
+                
+                if(user.getRole() == 2)
+                    return false;
+                
+                break;
+        }
+        
+        return true;
+    }    
     
 }

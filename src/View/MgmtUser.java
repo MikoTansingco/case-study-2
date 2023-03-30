@@ -30,8 +30,6 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
     private User user;
     private String tabName;
     
-    private CentralizedAccessControl centralizedAccessControl;
-    
     public MgmtUser(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
@@ -64,8 +62,7 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
                 users.get(nCtr).getLocked()});
         }
         
-        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
-        centralizedAccessControl.setUserButtons(lockBtn, deleteBtn, lockBtn, chgpassBtn);
+        CentralizedAccessControl.setUserButtons(lockBtn, deleteBtn, lockBtn, chgpassBtn, user);
     }
 
     public void designer(JTextField component, String text){

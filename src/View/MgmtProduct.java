@@ -29,8 +29,6 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
     private User user;
     private String tabName;
     
-    private CentralizedAccessControl centralizedAccessControl;
-    
     public MgmtProduct(SQLite sqlite, User user, String tabName) {
         initComponents();
         this.sqlite = sqlite;
@@ -63,8 +61,7 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
                 products.get(nCtr).getPrice()});
         }
         
-        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
-        centralizedAccessControl.setProductButtons(purchaseBtn, addBtn, editBtn, deleteBtn);
+        CentralizedAccessControl.setProductButtons(purchaseBtn, addBtn, editBtn, deleteBtn, user);
     }
     
     public void designer(JTextField component, String text){

@@ -31,7 +31,6 @@ public class StaffHome extends javax.swing.JPanel {
     private CardLayout contentView = new CardLayout();
     private User user;
     private SQLite sqlite;
-    private CentralizedAccessControl centralizedAccessControl;
     
     public StaffHome(SQLite sqlite) {
         initComponents();
@@ -54,10 +53,8 @@ public class StaffHome extends javax.swing.JPanel {
         Content.add(mgmtHistory, "mgmtHistory");
         Content.add(mgmtProduct, "mgmtProduct");
         Content.add(mgmtLogs, "mgmtLogs");
-        
-        
-        centralizedAccessControl = new CentralizedAccessControl(user, sqlite);
-        centralizedAccessControl.setHomeButtons(historyBtn, logsBtn, productsBtn, usersBtn);
+
+        CentralizedAccessControl.setHomeButtons(historyBtn, logsBtn, productsBtn, usersBtn, user);
 //        UNCOMMENT TO DISABLE BUTTONS
 //        historyBtn.setVisible(false);
 //        usersBtn.setVisible(false);
