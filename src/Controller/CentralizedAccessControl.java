@@ -105,10 +105,12 @@ public class CentralizedAccessControl {
         switch(user.getRole()){
             case 2://Client
                 search.setVisible(true);
+                search.setText("SEARCH PRODUCT");
                 reload.setVisible(true);
                 break;
             case 4://Manager
                 search.setVisible(true);
+                search.setText("SEARCH USER");
                 reload.setVisible(true);
                 break;
             default: 
@@ -183,9 +185,9 @@ public class CentralizedAccessControl {
             case "getHistory":
                 
                 if(user.getRole() == 2)
-                    return false;
-                
+                    return false; 
                 break;
+            
         }
         
         return true;

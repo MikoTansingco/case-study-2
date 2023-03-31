@@ -194,8 +194,23 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
 
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(stockFld.getText());
-                sqlite.addHistory(user.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0)
-                        , Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
+                String productName = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
+                int stockAvailable =  (int) tableModel.getValueAt(table.getSelectedRow(), 1);
+                int stockBought = Integer.parseInt(stockFld.getText());
+                float price = (float) tableModel.getValueAt(table.getSelectedRow(), 2);
+                
+                if(stockAvailable - stockBought < 0)
+                {
+                    JOptionPane.showMessageDialog(this, "Not enough stock available!!", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
+                    
+                    
+                sqlite.addHistory(user.getUsername(), productName, Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
+                sqlite.updateProduct(productName,
+                        productName,
+                        stockAvailable - stockBought,
+                        price);
                 this.init();
             }
         }

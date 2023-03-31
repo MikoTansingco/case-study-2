@@ -197,14 +197,9 @@ public class SQLite {
         }
     }
     
-    public ArrayList<History> getHistory(User user){
+        public ArrayList<History> getHistory(){
         
-        String sql = "SELECT id, username, name, stock, timestamp FROM history";
-        
-        boolean hasAuthority = CentralizedAccessControl.checkAuthority(user, "getHistory");
-        if(!hasAuthority)
-            sql += " WHERE username= '" + user.getUsername() + "';";
-        else sql += ";";
+        String sql = "SELECT id, username, name, stock, timestamp FROM history;";
         
         //System.out.print(sql);
         
@@ -226,8 +221,81 @@ public class SQLite {
         }
         return histories;
     }
+        
+    public ArrayList<History> getHistoryByUser(String username){
+        
+        String sql = "SELECT id, username, name, stock, timestamp FROM history WHERE username= '" + username + "';";
+        
+        System.out.println(sql);
+        
+        ArrayList<History> histories = new ArrayList<History>();
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            
+            while (rs.next()) {
+                histories.add(new History(rs.getInt("id"),
+                                   rs.getString("username"),
+                                   rs.getString("name"),
+                                   rs.getInt("stock"),
+                                   rs.getString("timestamp")));
+            }
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+        return histories;
+    }
     
+    public ArrayList<History> getHistoryByProduct(String productName){
+        
+        String sql = "SELECT id, username, name, stock, timestamp FROM history WHERE name= '" + productName + "';";
+        
+        System.out.println(sql);
+        
+        ArrayList<History> histories = new ArrayList<History>();
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            
+            while (rs.next()) {
+                histories.add(new History(rs.getInt("id"),
+                                   rs.getString("username"),
+                                   rs.getString("name"),
+                                   rs.getInt("stock"),
+                                   rs.getString("timestamp")));
+            }
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+        return histories;
+    }
     
+    public ArrayList<History> getHistoryByUserAndProduct(String username, String productName){
+        
+        String sql = "SELECT id, username, name, stock, timestamp FROM history WHERE username= '" + username + "' AND name = '" + productName + "';";
+        
+        System.out.println(sql);
+        
+        ArrayList<History> histories = new ArrayList<History>();
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            
+            while (rs.next()) {
+                histories.add(new History(rs.getInt("id"),
+                                   rs.getString("username"),
+                                   rs.getString("name"),
+                                   rs.getInt("stock"),
+                                   rs.getString("timestamp")));
+            }
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+        return histories;
+    }
     
     public ArrayList<Logs> getLogs(){
         String sql = "SELECT id, event, username, desc, timestamp FROM logs";
@@ -412,7 +480,7 @@ public class SQLite {
     
     
     public void test(){
-        String sql = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
+        String sql = "UPDATE users SET role = '2' WHERE username = 'pancakes';";
         
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement()) {

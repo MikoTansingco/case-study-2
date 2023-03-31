@@ -55,8 +55,13 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
             tableModel.removeRow(0);
         }
         
+        ArrayList<History> history;
+                
 //      LOAD CONTENTS
-        ArrayList<History> history = sqlite.getHistory(user);     
+
+        if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
+            history = sqlite.getHistory();
+        else history = sqlite.getHistoryByUser(user.getUsername());     
         
         for(int nCtr = 0; nCtr < history.size(); nCtr++){
             Product product = sqlite.getProduct(history.get(nCtr).getName());
@@ -175,7 +180,10 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         JTextField searchFld = new JTextField("0");
-        designer(searchFld, "SEARCH USERNAME OR PRODUCT");
+        
+        if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
+            designer(searchFld, "SEARCH USERNAME OR PRODUCT");
+        else designer(searchFld, "SEARCH PRODUCT");
 
         Object[] message = {
             searchFld
@@ -185,12 +193,28 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
 
         if (result == JOptionPane.OK_OPTION) {
 //          CLEAR TABLE
+
+            //System.out.println("TRUE");
+            
             for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){
                 tableModel.removeRow(0);
             }
-
+            
+            ArrayList<History> history;
+            
 //          LOAD CONTENTS
-            ArrayList<History> history = sqlite.getHistory(user);
+
+            if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
+            {
+                 history = sqlite.getHistoryByUser(searchFld.getText());
+                 history.addAll(sqlite.getHistoryByProduct(searchFld.getText()));
+            }
+            else{
+                history = sqlite.getHistoryByUserAndProduct(user.getUsername(), searchFld.getText());
+            }
+               
+            
+            
             for(int nCtr = 0; nCtr < history.size(); nCtr++){
                 if(searchFld.getText().contains(history.get(nCtr).getUsername()) || 
                    history.get(nCtr).getUsername().contains(searchFld.getText()) || 
@@ -198,6 +222,10 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
                    history.get(nCtr).getName().contains(searchFld.getText())){
                 
                     Product product = sqlite.getProduct(history.get(nCtr).getName());
+                    
+                    if(product == null)
+                        continue;
+                    
                     tableModel.addRow(new Object[]{
                         history.get(nCtr).getUsername(), 
                         history.get(nCtr).getName(), 
@@ -209,7 +237,7 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
                 }
             }
             
-            this.init();
+            //this.init();
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 
