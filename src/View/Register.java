@@ -121,7 +121,9 @@ public class Register extends javax.swing.JPanel {
     boolean isUsingEmail = false;
     
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        new RegisterSecurityFeatures().attemptRegistration(usernameFld.getText(), passwordFld.getText(), confpassFld.getText(), isUsingEmail, frame);
+        RegisterSecurityFeatures regFeatures = new RegisterSecurityFeatures(usernameFld.getText(), passwordFld.getText(), confpassFld.getText(), isUsingEmail);
+        
+        regFeatures.attemptRegistration();
     }//GEN-LAST:event_registerBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
