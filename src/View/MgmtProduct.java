@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import Controller.MgmtTab;
+import static Controller.SessionManagment.addSessionLog;
 import java.sql.Timestamp;
 
 /**
@@ -194,23 +195,9 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
 
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(stockFld.getText());
-                String productName = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
-                int stockAvailable =  (int) tableModel.getValueAt(table.getSelectedRow(), 1);
-                int stockBought = Integer.parseInt(stockFld.getText());
-                float price = (float) tableModel.getValueAt(table.getSelectedRow(), 2);
-                
-                if(stockAvailable - stockBought < 0)
-                {
-                    JOptionPane.showMessageDialog(this, "Not enough stock available!!", "ERROR MESSAGE", HEIGHT);
-                    return;
-                }
-                    
-                    
-                sqlite.addHistory(user.getUsername(), productName, Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
-                sqlite.updateProduct(productName,
-                        productName,
-                        stockAvailable - stockBought,
-                        price);
+                sqlite.addHistory(user.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0)
+                        , Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
+                addSessionLog("Purchased a product");
                 this.init();
             }
         }
@@ -235,7 +222,8 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             System.out.println(nameFld.getText());
             System.out.println(stockFld.getText());
             System.out.println(priceFld.getText());
-            
+            addSessionLog("Added an item" + nameFld.getText() );
+
             sqlite.addProduct(nameFld.getText(), Integer.parseInt(stockFld.getText())
                     , Double.parseDouble(priceFld.getText()));
             this.init();
@@ -259,16 +247,18 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             int result = JOptionPane.showConfirmDialog(null, message, "EDIT PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
+                addSessionLog("Edited the item " + nameFld.getText() );
                 System.out.println(nameFld.getText());
                 System.out.println(stockFld.getText());
                 System.out.println(priceFld.getText());
-            }
-            
-            sqlite.updateProduct( (String) tableModel.getValueAt(table.getSelectedRow(), 0),
+                
+                sqlite.updateProduct( (String) tableModel.getValueAt(table.getSelectedRow(), 0),
                                    nameFld.getText(),
                                   Integer.parseInt(stockFld.getText()),
                                   Double.parseDouble(priceFld.getText()));
-            this.init();
+                this.init();
+            }
+            
         }
     }//GEN-LAST:event_editBtnActionPerformed
 
@@ -279,6 +269,7 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+                addSessionLog("Deleted an item");
                 this.init();
             }
         }

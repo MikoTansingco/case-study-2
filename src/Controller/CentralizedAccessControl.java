@@ -80,7 +80,7 @@ public class CentralizedAccessControl {
                 jUser.setVisible(false);
                 break;
             case 3://Staff
-                history.setVisible(false);
+                history.setVisible(true);
                 logs.setVisible(false);
                 product.setVisible(true);
                 jUser.setVisible(false);
@@ -94,7 +94,7 @@ public class CentralizedAccessControl {
             case 5://Admin
                 history.setVisible(false);
                 logs.setVisible(true);
-                product.setVisible(false);
+                product.setVisible(true);
                 jUser.setVisible(true);
                 break;
         }
@@ -105,12 +105,14 @@ public class CentralizedAccessControl {
         switch(user.getRole()){
             case 2://Client
                 search.setVisible(true);
-                search.setText("SEARCH PRODUCT");
+                reload.setVisible(true);
+                break;
+            case 3://staff
+                search.setVisible(true);
                 reload.setVisible(true);
                 break;
             case 4://Manager
                 search.setVisible(true);
-                search.setText("SEARCH USER");
                 reload.setVisible(true);
                 break;
             default: 
@@ -141,16 +143,22 @@ public class CentralizedAccessControl {
                 delete.setVisible(false);
                 break;
             case 3://Staff
-                purchase.setVisible(false);
+                purchase.setVisible(true);
                 add.setVisible(true);
                 edit.setVisible(true);
                 delete.setVisible(true);
                 break;
             case 4://Manager
-                purchase.setVisible(false);
+                purchase.setVisible(true);
                 add.setVisible(true);
                 edit.setVisible(true);
                 delete.setVisible(true);
+                break;
+            case 5://admin
+                purchase.setVisible(true);
+                add.setVisible(false);
+                edit.setVisible(false);
+                delete.setVisible(false);
                 break;
             default: 
                 purchase.setVisible(false);
@@ -184,10 +192,10 @@ public class CentralizedAccessControl {
         switch(purpose){
             case "getHistory":
                 
-                if(user.getRole() == 2)
-                    return false; 
+                if(user.getRole() == 2||user.getRole() == 3)
+                    return false;
+                
                 break;
-            
         }
         
         return true;

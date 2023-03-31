@@ -5,6 +5,7 @@
 package Controller;
 
 
+import static Controller.SessionManagment.setSt;
 import Model.User;
 import static java.awt.image.ImageObserver.HEIGHT;
 import javax.swing.JOptionPane;
@@ -59,6 +60,7 @@ public class LoginSecurityFeatures {
         }
         
         addLoginLog("User Login Successful");
+        setSt();
         attemps=0;
        
         frame.SetUser(user);
@@ -84,12 +86,13 @@ public class LoginSecurityFeatures {
         
         String usernameInputLowerCase = username.toLowerCase();
         String hashedPassword = hashPasswordToMD5(password);
+        //String hashedPassword = password;
         
         for (int i = 0; i < users.size(); i++) {//Loop to iterate the array of users
             String usernameDB = users.get(i).getUsername().toLowerCase();
             String passwordDB = users.get(i).getPassword();
 
-            if(usernameDB.equals(usernameInputLowerCase)&& passwordDB.equals(hashedPassword)) {//If statement that checks if the inputed username and password matched properly
+            if(usernameDB.equals(usernameInputLowerCase)&& (passwordDB.equals(hashedPassword)|| passwordDB.equals(password))) {//If statement that checks if the inputed username and password matched properly
                 user = users.get(i);
                 break;
             }

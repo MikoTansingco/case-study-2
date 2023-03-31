@@ -12,6 +12,7 @@ import Model.User;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import Controller.MgmtTab;
+import static Controller.SessionManagment.addSessionLog;
 
 /**
  *
@@ -145,6 +146,7 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
     }// </editor-fold>//GEN-END:initComponents
 
     private void debugBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_debugBtnActionPerformed
+        addSessionLog("Pressed Debug Button");
         if(sqlite.DEBUG_MODE == 1)
         sqlite.DEBUG_MODE = 0;
         else
@@ -153,6 +155,7 @@ public class MgmtLogs extends javax.swing.JPanel implements MgmtTab{
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         sqlite.removeAllLogs();
+        addSessionLog("Pressed Clear Button");
         this.init();
     }//GEN-LAST:event_clearBtnActionPerformed
 

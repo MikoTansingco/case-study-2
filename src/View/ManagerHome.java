@@ -7,6 +7,7 @@ package View;
 
 import Controller.CentralizedAccessControl;
 import Controller.SQLite;
+import static Controller.SessionManagment.addSessionLog;
 import Model.History;
 import Model.Logs;
 import Model.Product;
@@ -163,6 +164,7 @@ public class ManagerHome extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void usersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersBtnActionPerformed
+        addSessionLog("Pressed Users Button");
         mgmtUser.init();
         usersBtn.setForeground(Color.red);
         productsBtn.setForeground(Color.black);
@@ -172,6 +174,7 @@ public class ManagerHome extends javax.swing.JPanel {
     }//GEN-LAST:event_usersBtnActionPerformed
 
     private void productsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsBtnActionPerformed
+        addSessionLog("Pressed Products Button");
         mgmtProduct.init();
         usersBtn.setForeground(Color.black);
         productsBtn.setForeground(Color.red);
@@ -181,6 +184,7 @@ public class ManagerHome extends javax.swing.JPanel {
     }//GEN-LAST:event_productsBtnActionPerformed
 
     private void historyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_historyBtnActionPerformed
+        addSessionLog("Pressed History Button");
         mgmtHistory.init();
         usersBtn.setForeground(Color.black);
         productsBtn.setForeground(Color.black);
@@ -190,6 +194,7 @@ public class ManagerHome extends javax.swing.JPanel {
     }//GEN-LAST:event_historyBtnActionPerformed
 
     private void logsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logsBtnActionPerformed
+        addSessionLog("Pressed Logs Button");
         mgmtLogs.init();
         usersBtn.setForeground(Color.black);
         productsBtn.setForeground(Color.black);

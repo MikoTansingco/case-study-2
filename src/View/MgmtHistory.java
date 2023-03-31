@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import Controller.MgmtTab;
+import static Controller.SessionManagment.addSessionLog;
 
 
 /**
@@ -236,12 +237,15 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
                     });
                 }
             }
+            addSessionLog("Searched for" + searchFld.getText());
+
             
             //this.init();
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void reloadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadBtnActionPerformed
+        addSessionLog("Pressed Reload Button");
         this.init();
     }//GEN-LAST:event_reloadBtnActionPerformed
 
