@@ -5,6 +5,8 @@
 package Controller;
 
 
+import static Controller.DataValidation.isSQL;
+import static Controller.DataValidation.notPassword;
 import static Controller.SessionManagment.setSt;
 import Model.User;
 import static java.awt.image.ImageObserver.HEIGHT;
@@ -91,16 +93,29 @@ public class LoginSecurityFeatures {
         for (int i = 0; i < users.size(); i++) {//Loop to iterate the array of users
             String usernameDB = users.get(i).getUsername().toLowerCase();
             String passwordDB = users.get(i).getPassword();
-
+            
             if(usernameDB.equals(usernameInputLowerCase)&& (passwordDB.equals(hashedPassword)|| passwordDB.equals(password))) {//If statement that checks if the inputed username and password matched properly
                 user = users.get(i);
+                break;
+            }
+            else if(isSQL(usernameInputLowerCase)||isSQL(password)||isSQL(hashedPassword)){
+                addLoginLog("User Attempted SQL injection");
+                displayMessage("Error");
+                attemps = 5;
+                hasError = true;
+                break;
+            }
+            else if(notPassword(password)){
+                addLoginLog("User entered incorrect format");//log that an attempt was made and what password was used to prevent password spraying
+                displayMessage("Error");
+                hasError = true;
                 break;
             }
             else{
               if(i+1==users.size()){//After iterating the users and found no valid combination of username and password
                     attemps++;      //the number of attemps increase
                     displayMessage("Invalid Username and/or Password number of tries: "+attemps);//displays a dialogue box of the error message and the number of attemps
-                    addLoginLog("User Attempt Made using the password: "+password);//log that an attempt was made and what password was used to prevent password spraying
+                    addLoginLog("User Attempt made using the password: "+password);//log that an attempt was made and what password was used to prevent password spraying
                     hasError = true;
                     break;
                 }      

@@ -4,6 +4,7 @@
  */
 package Controller;
 
+import static Controller.DataValidation.isSQL;
 import static java.awt.image.ImageObserver.HEIGHT;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +40,7 @@ public class RegisterSecurityFeatures {
         this.isUsingEmail = isUsingEmail;
         this.frame = frame;
         
-        
+        checkIfSql();
         checkIfNull();
         checkIfUsernameAlreadyTaken();
         checkIfValidEmail();
@@ -58,7 +59,12 @@ public class RegisterSecurityFeatures {
         
         addRegisterLog("User creation successful");
     }
-    
+    void checkIfSql(){
+        if(isSQL(username)||isSQL(password)||isSQL(confpass)){
+            displayMessage("ERROR!");
+            hasError = true;
+        }
+    }
     void checkIfNull(){
         
         if(hasError)

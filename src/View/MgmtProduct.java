@@ -195,7 +195,7 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
 
             if (result == JOptionPane.OK_OPTION) {
                 //System.out.println(stockFld.getText());
-                
+
                 String productName = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
                 int stockAvailable =  (int) tableModel.getValueAt(table.getSelectedRow(), 1);
                 
@@ -215,12 +215,12 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
                 }
                 
                     
-                    
                 sqlite.addHistory(user.getUsername(), productName, Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
                 sqlite.updateProduct(productName,
                         productName,
                         stockAvailable - stockBought,
                         price);
+                addSessionLog("Purchased an item");    
                 this.init();
             }
         }

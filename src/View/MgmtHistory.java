@@ -6,6 +6,7 @@
 package View;
 
 import Controller.CentralizedAccessControl;
+import static Controller.DataValidation.isSQL;
 import Controller.SQLite;
 import Model.History;
 import Model.Product;
@@ -185,61 +186,69 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
         Object[] message = {
             searchFld
         };
-        
-        if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
-        {
+        if(CentralizedAccessControl.checkAuthority(user, "getHistory")){
             designer(searchFld, "SEARCH USERNAME OR PRODUCT");
         }
         else designer(searchFld, "SEARCH PRODUCT");
-                
+
         int result = JOptionPane.showConfirmDialog(null, message, "SEARCH HISTORY", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+        
+        if(isSQL(searchFld.getText())){
+                addSessionLog("User Attempted SQL injection");
+                JOptionPane.showMessageDialog(null, "ERROR!", "Message Dialog", JOptionPane.ERROR_MESSAGE);
 
-        if (result == JOptionPane.OK_OPTION) {
-//          CLEAR TABLE
+        }
+        else{
+            if (result == JOptionPane.OK_OPTION) {
+    //          CLEAR TABLE
 
-            //System.out.println("TRUE");
-            
-            for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){
-                tableModel.removeRow(0);
-            }
-            
-            ArrayList<History> history;
-            
-//          LOAD CONTENTS
+                //System.out.println("TRUE");
 
-            if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
-            {
-                 history = sqlite.getHistoryByUser(searchFld.getText());
-                 history.addAll(sqlite.getHistoryByProduct(searchFld.getText()));
-            }
-            else{
-                history = sqlite.getHistoryByUserAndProduct(user.getUsername(), searchFld.getText());
-            }
-               
-            
-            
-            for(int nCtr = 0; nCtr < history.size(); nCtr++){
-                if(searchFld.getText().contains(history.get(nCtr).getUsername()) || 
-                   history.get(nCtr).getUsername().contains(searchFld.getText()) || 
-                   searchFld.getText().contains(history.get(nCtr).getName()) || 
-                   history.get(nCtr).getName().contains(searchFld.getText())){
-                
-                    Product product = sqlite.getProduct(history.get(nCtr).getName());
-                    
-                    if(product == null)
-                        continue;
-                    
-                    tableModel.addRow(new Object[]{
-                        history.get(nCtr).getUsername(), 
-                        history.get(nCtr).getName(), 
-                        history.get(nCtr).getStock(), 
-                        product.getPrice(), 
-                        product.getPrice() * history.get(nCtr).getStock(), 
-                        history.get(nCtr).getTimestamp()
-                    });
+                for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){
+                    tableModel.removeRow(0);
                 }
+
+                ArrayList<History> history;
+
+    //          LOAD CONTENTS
+
+                if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
+                {
+                     history = sqlite.getHistoryByUser(searchFld.getText());
+                     history.addAll(sqlite.getHistoryByProduct(searchFld.getText()));
+                }
+                else{
+                    history = sqlite.getHistoryByUserAndProduct(user.getUsername(), searchFld.getText());
+                }
+
+
+
+                for(int nCtr = 0; nCtr < history.size(); nCtr++){
+                    if(searchFld.getText().contains(history.get(nCtr).getUsername()) || 
+                       history.get(nCtr).getUsername().contains(searchFld.getText()) || 
+                       searchFld.getText().contains(history.get(nCtr).getName()) || 
+                       history.get(nCtr).getName().contains(searchFld.getText())){
+
+                        Product product = sqlite.getProduct(history.get(nCtr).getName());
+
+                        if(product == null)
+                            continue;
+
+                        tableModel.addRow(new Object[]{
+                            history.get(nCtr).getUsername(), 
+                            history.get(nCtr).getName(), 
+                            history.get(nCtr).getStock(), 
+                            product.getPrice(), 
+                            product.getPrice() * history.get(nCtr).getStock(), 
+                            history.get(nCtr).getTimestamp()
+                        });
+                    }
+                }
+                addSessionLog("Searched for " + searchFld.getText());
+
             }
-            addSessionLog("Searched for" + searchFld.getText());
+        
+        
 
             
             //this.init();

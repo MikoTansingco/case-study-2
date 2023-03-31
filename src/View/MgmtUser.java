@@ -6,6 +6,7 @@
 package View;
 
 import Controller.CentralizedAccessControl;
+import static Controller.DataValidation.isSQL;
 import Controller.SQLite;
 import Model.User;
 import java.util.ArrayList;
@@ -203,6 +204,8 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
                     return;
                 }
                 sqlite.updateUserRole((String) tableModel.getValueAt(table.getSelectedRow(), 0),Integer.parseInt(String.valueOf(result.charAt(0))));
+                addSessionLog("Changed a user's role");
+
                 this.init();
             }
         }
@@ -249,21 +252,29 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             JTextField confpass = new JPasswordField();
             designer(password, "PASSWORD");
             designer(confpass, "CONFIRM PASSWORD");
-
+            
             Object[] message = {
                 "Enter New Password:", password, confpass
             };
-
+            
             int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-
-            if (result == JOptionPane.OK_OPTION) {
-                addSessionLog("Changed password");
-                System.out.println(password.getText());
-                System.out.println(confpass.getText());
-                
-                sqlite.updateUserPassword((String) tableModel.getValueAt(table.getSelectedRow(), 0), password.getText());
-                this.init();
+            if(isSQL(password.getText())||isSQL(confpass.getText())){
+                addSessionLog("User Attempted SQL injection");
+                JOptionPane.showMessageDialog(null, "ERROR!", "Message Dialog", JOptionPane.ERROR_MESSAGE);
             }
+            else if(!password.getText().equals(confpass.getText())){
+                JOptionPane.showMessageDialog(null, "Password not match", "Message Dialog", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                if (result == JOptionPane.OK_OPTION) {
+                    addSessionLog("Changed password");
+                    System.out.println(password.getText());
+                    System.out.println(confpass.getText());
+                    sqlite.updateUserPassword((String) tableModel.getValueAt(table.getSelectedRow(), 0), password.getText());
+                    this.init();
+                }
+            }
+            
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed
 
