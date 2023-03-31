@@ -204,6 +204,7 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
                 if(stockBought == -1)
                 {
                     JOptionPane.showMessageDialog(this, "Please input an integer", "ERROR MESSAGE", HEIGHT);
+                    return;
                 }
                 
                 float price = (float) tableModel.getValueAt(table.getSelectedRow(), 2);
