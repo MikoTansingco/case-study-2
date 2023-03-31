@@ -194,9 +194,14 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
                 "EDIT USER ROLE", JOptionPane.QUESTION_MESSAGE, null, options, options[(int)tableModel.getValueAt(table.getSelectedRow(), 2) - 1]);
 
             if(result != null){
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
-                System.out.println(result.charAt(0));
-                
+                //System.out.println(tableModel.getValueAt(table.getSelectedRow(), 2));
+                //System.out.println(result.charAt(0));
+                User tempUser = sqlite.getUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+               
+                if(CentralizedAccessControl.checkAuthority(tempUser, "editRole")){
+                    JOptionPane.showMessageDialog(this, "Cannot change another admin ", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
                 sqlite.updateUserRole((String) tableModel.getValueAt(table.getSelectedRow(), 0),Integer.parseInt(String.valueOf(result.charAt(0))));
                 this.init();
             }
@@ -219,6 +224,7 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
     private void lockBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockBtnActionPerformed
         addSessionLog("Pressed Lock Button");
         if(table.getSelectedRow() >= 0){
+            
             String state = "lock";
             if("1".equals(tableModel.getValueAt(table.getSelectedRow(), 3) + "")){
                 state = "unlock";
@@ -227,8 +233,11 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
-                sqlite.updateUserLock((String) tableModel.getValueAt(table.getSelectedRow(), 0), result);
+                //System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                if(state == "lock")
+                    sqlite.updateUserLock((String) tableModel.getValueAt(table.getSelectedRow(), 0), 1);
+                else sqlite.updateUserLock((String) tableModel.getValueAt(table.getSelectedRow(), 0), 0);
                 this.init();
             }
         }

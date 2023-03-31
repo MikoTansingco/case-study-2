@@ -194,10 +194,33 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
             int result = JOptionPane.showConfirmDialog(null, message, "PURCHASE PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(stockFld.getText());
-                sqlite.addHistory(user.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0)
-                        , Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
-                addSessionLog("Purchased a product");
+                //System.out.println(stockFld.getText());
+                
+                String productName = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
+                int stockAvailable =  (int) tableModel.getValueAt(table.getSelectedRow(), 1);
+                
+                int stockBought = CentralizedAccessControl.attemptInteger(stockFld.getText());
+                
+                if(stockBought == -1)
+                {
+                    JOptionPane.showMessageDialog(this, "Please input an integer", "ERROR MESSAGE", HEIGHT);
+                }
+                
+                float price = (float) tableModel.getValueAt(table.getSelectedRow(), 2);
+                
+                if(stockAvailable - stockBought < 0)
+                {
+                    JOptionPane.showMessageDialog(this, "Not enough stock available!!", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
+                
+                    
+                    
+                sqlite.addHistory(user.getUsername(), productName, Integer.parseInt(stockFld.getText()), new Timestamp(System.currentTimeMillis()).toString());
+                sqlite.updateProduct(productName,
+                        productName,
+                        stockAvailable - stockBought,
+                        price);
                 this.init();
             }
         }
@@ -219,13 +242,25 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
         int result = JOptionPane.showConfirmDialog(null, message, "ADD PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
         if (result == JOptionPane.OK_OPTION) {
-            System.out.println(nameFld.getText());
-            System.out.println(stockFld.getText());
-            System.out.println(priceFld.getText());
+            //System.out.println(nameFld.getText());
+            //System.out.println(stockFld.getText());
+            //System.out.println(priceFld.getText());
             addSessionLog("Added an item" + nameFld.getText() );
-
-            sqlite.addProduct(nameFld.getText(), Integer.parseInt(stockFld.getText())
-                    , Double.parseDouble(priceFld.getText()));
+            
+            int stock = CentralizedAccessControl.attemptInteger(stockFld.getText());
+            double price = CentralizedAccessControl.attemptDouble(priceFld.getText());
+            
+            if(stock == -1){
+                JOptionPane.showMessageDialog(this, "Please input an integer for stock", "ERROR MESSAGE", HEIGHT);
+                return;
+            }
+            if(price == -1){
+                JOptionPane.showMessageDialog(this, "Please input a numerical value for price", "ERROR MESSAGE", HEIGHT);
+                return;
+            }
+            
+            
+            sqlite.addProduct(nameFld.getText(), stock, price);
             this.init();
         }
     }//GEN-LAST:event_addBtnActionPerformed
@@ -248,14 +283,27 @@ public class MgmtProduct extends javax.swing.JPanel implements MgmtTab{
 
             if (result == JOptionPane.OK_OPTION) {
                 addSessionLog("Edited the item " + nameFld.getText() );
-                System.out.println(nameFld.getText());
-                System.out.println(stockFld.getText());
-                System.out.println(priceFld.getText());
+                //System.out.println(nameFld.getText());
+                //System.out.println(stockFld.getText());
+                //System.out.println(priceFld.getText());
+                String oldName = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
+                String newName = nameFld.getText();
+                int newStock = CentralizedAccessControl.attemptInteger(stockFld.getText());
+                double newPrice = CentralizedAccessControl.attemptDouble(priceFld.getText());
                 
-                sqlite.updateProduct( (String) tableModel.getValueAt(table.getSelectedRow(), 0),
-                                   nameFld.getText(),
-                                  Integer.parseInt(stockFld.getText()),
-                                  Double.parseDouble(priceFld.getText()));
+                if(newStock == -1){
+                JOptionPane.showMessageDialog(this, "Please input an integer for stock", "ERROR MESSAGE", HEIGHT);
+                return;
+                }
+                if(newPrice == -1){
+                    JOptionPane.showMessageDialog(this, "Please input a numerical value for price", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
+                
+                sqlite.updateProduct(oldName,
+                                   newName,
+                                  newStock,
+                                  newPrice);
                 this.init();
             }
             

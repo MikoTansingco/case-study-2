@@ -181,15 +181,17 @@ public class MgmtHistory extends javax.swing.JPanel implements MgmtTab {
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         JTextField searchFld = new JTextField("0");
-        
-        if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
-            designer(searchFld, "SEARCH USERNAME OR PRODUCT");
-        else designer(searchFld, "SEARCH PRODUCT");
 
         Object[] message = {
             searchFld
         };
-
+        
+        if(CentralizedAccessControl.checkAuthority(user, "getHistory"))
+        {
+            designer(searchFld, "SEARCH USERNAME OR PRODUCT");
+        }
+        else designer(searchFld, "SEARCH PRODUCT");
+                
         int result = JOptionPane.showConfirmDialog(null, message, "SEARCH HISTORY", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
         if (result == JOptionPane.OK_OPTION) {

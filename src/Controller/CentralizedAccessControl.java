@@ -12,6 +12,7 @@ import View.MgmtProduct;
 import View.MgmtUser;
 import java.awt.*;
 import java.awt.event.*;
+import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
@@ -82,19 +83,19 @@ public class CentralizedAccessControl {
             case 3://Staff
                 history.setVisible(true);
                 logs.setVisible(false);
-                product.setVisible(true);
+                product.setVisible(false);
                 jUser.setVisible(false);
                 break;
             case 4://Manager
                 history.setVisible(true);
                 logs.setVisible(false);
-                product.setVisible(true);
+                product.setVisible(false);
                 jUser.setVisible(false);
                 break;
             case 5://Admin
                 history.setVisible(false);
                 logs.setVisible(true);
-                product.setVisible(true);
+                product.setVisible(false);
                 jUser.setVisible(true);
                 break;
         }
@@ -105,14 +106,17 @@ public class CentralizedAccessControl {
         switch(user.getRole()){
             case 2://Client
                 search.setVisible(true);
+                search.setText("SEARCH PRODUCT");
                 reload.setVisible(true);
                 break;
             case 3://staff
                 search.setVisible(true);
+                search.setText("SEARCH PRODUCT OR USERNAME");
                 reload.setVisible(true);
                 break;
             case 4://Manager
                 search.setVisible(true);
+                search.setText("SEARCH PRODUCT OR USERNAME");
                 reload.setVisible(true);
                 break;
             default: 
@@ -143,22 +147,16 @@ public class CentralizedAccessControl {
                 delete.setVisible(false);
                 break;
             case 3://Staff
-                purchase.setVisible(true);
+                purchase.setVisible(false);
                 add.setVisible(true);
                 edit.setVisible(true);
                 delete.setVisible(true);
                 break;
             case 4://Manager
-                purchase.setVisible(true);
+                purchase.setVisible(false);
                 add.setVisible(true);
                 edit.setVisible(true);
                 delete.setVisible(true);
-                break;
-            case 5://admin
-                purchase.setVisible(true);
-                add.setVisible(false);
-                edit.setVisible(false);
-                delete.setVisible(false);
                 break;
             default: 
                 purchase.setVisible(false);
@@ -189,16 +187,42 @@ public class CentralizedAccessControl {
         
     public static boolean checkAuthority(User user, String purpose){
         
+        int role = user.getRole();
         switch(purpose){
             case "getHistory":
                 
-                if(user.getRole() == 2||user.getRole() == 3)
+                if(role == 2)
                     return false;
+                else if(role == 4)
+                    return true;
                 
                 break;
+            case "editRole":
+                
+                if(role == 5)
+                    return true;
+                else return false;
+                
         }
         
         return true;
-    }    
+    }
     
+    public static int attemptInteger(String input){
+        try{
+            int toReturn = Integer.parseInt(input);
+            return toReturn;
+        }catch(NumberFormatException e){
+            return -1;
+        }
+    }
+    
+    public static double attemptDouble(String input){
+        try{
+            double toReturn = Double.parseDouble(input);
+            return toReturn;
+        }catch(NumberFormatException e){
+            return -1;
+        }
+    }
 }

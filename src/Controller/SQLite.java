@@ -359,6 +359,29 @@ public class SQLite {
         return users;
     }
     
+    public static User getUser(String username){
+        String sql = "SELECT id, username, password, role, locked FROM users WHERE username = '" + username + "';";
+        
+        User user = null;
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            
+            while (rs.next()) {
+                user = new User(rs.getInt("id"),
+                                   rs.getString("username"),
+                                   rs.getString("password"),
+                                   rs.getInt("role"),
+                                   rs.getInt("locked"));
+                
+
+            }
+        } catch (Exception ex) {}
+        
+        return user;
+    }
+    
     public void addUser(String username, String password, int role) {
         String sql = "INSERT INTO users(username,password,role) VALUES('" + username + "','" + password + "','" + role + "')";
         
@@ -480,7 +503,7 @@ public class SQLite {
     
     
     public void test(){
-        String sql = "UPDATE users SET role = '2' WHERE username = 'pancakes';";
+        String sql = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
         
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement()) {
