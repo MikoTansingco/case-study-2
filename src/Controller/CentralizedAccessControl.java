@@ -81,9 +81,9 @@ public class CentralizedAccessControl {
                 jUser.setVisible(false);
                 break;
             case 3://Staff
-                history.setVisible(true);
+                history.setVisible(false);
                 logs.setVisible(false);
-                product.setVisible(false);
+                product.setVisible(true);
                 jUser.setVisible(false);
                 break;
             case 4://Manager

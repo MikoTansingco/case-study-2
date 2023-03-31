@@ -504,7 +504,7 @@ public class SQLite {
     
     public void test(){
         //String sql1 = "UPDATE users SET locked = '0' WHERE username = 'pancakes';";
-        String sql2 = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
+        String sql2 = "UPDATE users SET role = '3' WHERE username = 'pancakes';";
         
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement()) {

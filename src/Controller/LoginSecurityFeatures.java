@@ -113,6 +113,10 @@ public class LoginSecurityFeatures {
     }
     
     void checkIfLockedOut(){
+        
+        if(hasError)
+            return;
+        
         User userTemp = sqlite.getUser(this.username);
         System.out.println(userTemp);
         
