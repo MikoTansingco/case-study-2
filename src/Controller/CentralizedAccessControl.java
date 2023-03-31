@@ -89,7 +89,7 @@ public class CentralizedAccessControl {
             case 4://Manager
                 history.setVisible(true);
                 logs.setVisible(false);
-                product.setVisible(false);
+                product.setVisible(true);
                 jUser.setVisible(false);
                 break;
             case 5://Admin
@@ -200,9 +200,26 @@ public class CentralizedAccessControl {
             case "editRole":
                 
                 if(role == 5)
-                    return true;
-                else return false;
+                    return false;
+                else return true;
                 
+            case "deleteUser":
+                
+                if(role == 5)
+                    return false;
+                else return true;
+            
+            case "lockUser":
+
+               if(role == 5)
+                   return false;
+               else return true;
+               
+            case "changePass":
+
+               if(role == 5)
+                   return false;
+               else return true;
         }
         
         return true;

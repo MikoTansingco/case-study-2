@@ -27,9 +27,10 @@ public class LoginSecurityFeatures {
     String password;   
     Frame frame;
     int attemps=0;
-    
+    SQLite sqlite;
     
     public User user;
+    
     
     public void attemptLogin(String username, String password, Frame frame) {
         
@@ -44,6 +45,7 @@ public class LoginSecurityFeatures {
             
         NullEntry();
         checkValidUser();
+        checkIfLockedOut();
         
         if (hasError || user == null) {
             if(attemps>=5){
@@ -109,6 +111,18 @@ public class LoginSecurityFeatures {
             
         }
     }
+    
+    void checkIfLockedOut(){
+        User userTemp = sqlite.getUser(this.username);
+        System.out.println(userTemp);
+        
+        if(userTemp.getLocked() == 1)
+        {
+            displayMessage("Error. User is locked out.");
+            hasError = true;
+        }
+    }
+    
     void addLoginLog(String logDescription){
         
         //Courtesy of https://howtodoinjava.com/java/date-time/get-current-timestamp/
@@ -153,4 +167,5 @@ public class LoginSecurityFeatures {
         
         return generatedPassword;
     }
+    
 }

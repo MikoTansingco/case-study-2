@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/View/Login.java</file>
             <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/Controller/CentralizedAccessControl.java</file>
             <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/Controller/SQLite.java</file>
-            <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/View/MgmtHistory.java</file>
-            <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/View/MgmtProduct.java</file>
+            <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/View/MgmtUser.java</file>
+            <file>file:/D:/Documents/Term%20Documents/Term%2010/CSSECDV/case-study-2/src/Controller/LoginSecurityFeatures.java</file>
         </group>
     </open-files>
 </project-private>

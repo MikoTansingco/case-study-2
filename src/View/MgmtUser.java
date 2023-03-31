@@ -17,6 +17,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import Controller.MgmtTab;
+import Controller.RegisterSecurityFeatures;
 import static Controller.SessionManagment.addSessionLog;
 
 /**
@@ -198,7 +199,7 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
                 //System.out.println(result.charAt(0));
                 User tempUser = sqlite.getUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
                
-                if(CentralizedAccessControl.checkAuthority(tempUser, "editRole")){
+                if(!CentralizedAccessControl.checkAuthority(tempUser, "editRole")){
                     JOptionPane.showMessageDialog(this, "Cannot change another admin ", "ERROR MESSAGE", HEIGHT);
                     return;
                 }
@@ -211,9 +212,17 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         if(table.getSelectedRow() >= 0){
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
-
+            
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                User tempUser = sqlite.getUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+               
+                if(!CentralizedAccessControl.checkAuthority(tempUser, "deleteUser")){
+                    JOptionPane.showMessageDialog(this, "Cannot delete another admin ", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
+                
+                //System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 sqlite.removeUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
                 addSessionLog("Deleted a user");
                 this.init();
@@ -234,6 +243,13 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
 
             if (result == JOptionPane.YES_OPTION) {
                 //System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                User tempUser = sqlite.getUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+               
+                if(!CentralizedAccessControl.checkAuthority(tempUser, "lockUser")){
+                    JOptionPane.showMessageDialog(this, "Cannot lock another admin ", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
                 
                 if(state == "lock")
                     sqlite.updateUserLock((String) tableModel.getValueAt(table.getSelectedRow(), 0), 1);
@@ -257,9 +273,25 @@ public class MgmtUser extends javax.swing.JPanel implements MgmtTab{
             int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
+                
+                
+                User tempUser = sqlite.getUser((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+               
+                if(!CentralizedAccessControl.checkAuthority(tempUser, "changePass")){
+                    JOptionPane.showMessageDialog(this, "Cannot change password of another admin ", "ERROR MESSAGE", HEIGHT);
+                    return;
+                }
+                
                 addSessionLog("Changed password");
-                System.out.println(password.getText());
-                System.out.println(confpass.getText());
+                //System.out.println(password.getText());
+                //System.out.println(confpass.getText());
+                
+                RegisterSecurityFeatures regFeatures = new RegisterSecurityFeatures(tempUser.getUsername(), password.getText(),
+                        confpass.getText(), false);
+                boolean passChange = regFeatures.checkPassword();
+                
+                if(!passChange)
+                    return;
                 
                 sqlite.updateUserPassword((String) tableModel.getValueAt(table.getSelectedRow(), 0), password.getText());
                 this.init();

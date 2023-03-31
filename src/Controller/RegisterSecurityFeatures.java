@@ -30,21 +30,24 @@ public class RegisterSecurityFeatures {
     
     Frame frame;
     
-    public void attemptRegistration(String username, String password, String confpass, boolean isUsingEmail, Frame frame){
-        
+    public RegisterSecurityFeatures(String username, String password, String confpass, boolean isUsingEmail){
         this.username = username;
         this.password = password;
         this.confpass = confpass;
         
         this.isUsingEmail = isUsingEmail;
-        this.frame = frame;
+        this.frame = new Frame();
+    }
+    
+    public RegisterSecurityFeatures(){
+        
+    }
+    
+    public void attemptRegistration(){
         
         
-        checkIfNull();
-        checkIfUsernameAlreadyTaken();
-        checkIfValidEmail();
-        checkIfValidPassword();
-        checkIfPasswordsMatch();
+        checkUsername();
+        checkPassword();
         
         if(hasError)
         {
@@ -59,6 +62,26 @@ public class RegisterSecurityFeatures {
         addRegisterLog("User creation successful");
     }
     
+    public boolean checkUsername(){
+        checkIfNull();
+        checkIfUsernameAlreadyTaken();
+        checkIfValidEmail();
+        
+        if(this.hasError)
+            return false;
+        return true;
+    }
+    
+    
+    public boolean checkPassword(){
+        checkIfValidPassword();
+        checkIfPasswordsMatch();
+        
+        if(this.hasError)
+            return false;
+        return true;
+    }
+        
     void checkIfNull(){
         
         if(hasError)
@@ -207,4 +230,5 @@ public class RegisterSecurityFeatures {
         //System.out.println();
         //System.out.println(message);
     }
+   
 }

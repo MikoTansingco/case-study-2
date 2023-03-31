@@ -503,11 +503,13 @@ public class SQLite {
     
     
     public void test(){
-        String sql = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
+        //String sql1 = "UPDATE users SET locked = '0' WHERE username = 'pancakes';";
+        String sql2 = "UPDATE users SET role = '5' WHERE username = 'pancakes';";
         
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            //stmt.execute(sql1);
+            stmt.execute(sql2);
         } catch (Exception ex) {
             System.out.print(ex);
         }
